@@ -2,6 +2,7 @@
 import { onMounted } from 'vue'
 import { useBriefingStore } from '../stores/useBriefingStore'
 import { useThreadsStore } from '../stores/useThreadsStore'
+import { useSerendipityStore } from '../stores/useSerendipityStore'
 import BriefingMasthead from '../components/briefing/BriefingMasthead.vue'
 import BriefingGreeting from '../components/briefing/BriefingGreeting.vue'
 import AudioPlayer from '../components/common/AudioPlayer.vue'
@@ -15,9 +16,11 @@ import PrevBriefings from '../components/briefing/PrevBriefings.vue'
 
 const store = useBriefingStore()
 const threadsStore = useThreadsStore()
+const serendipityStore = useSerendipityStore()
 onMounted(() => {
   store.load()
   threadsStore.load()
+  serendipityStore.load()
 })
 </script>
 
@@ -76,11 +79,13 @@ onMounted(() => {
       </div>
       <BrevesSection :breves="store.data.breves" />
 
-      <!-- Signaux faibles -->
-      <div class="kicker">
-        <span class="kicker-l">— Détection précoce · signaux faibles —</span>
-      </div>
-      <FaiblesSection :faibles="store.data.faibles" />
+      <!-- Signaux faibles · à la frontière (sérendipité réelle, omise si vide) -->
+      <template v-if="serendipityStore.items.length">
+        <div class="kicker">
+          <span class="kicker-l">— Détection précoce · signaux faibles —</span>
+        </div>
+        <FaiblesSection :faibles="serendipityStore.items" />
+      </template>
 
       <!-- Briefings précédents -->
       <div class="kicker" style="margin-top: 64px">
