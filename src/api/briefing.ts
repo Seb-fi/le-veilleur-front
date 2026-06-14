@@ -1,4 +1,5 @@
 import { api } from './client'
+import { safeUrl, thumbOf } from './explorer'
 
 export interface Thread {
   name: string
@@ -21,6 +22,7 @@ export interface BriefingArticle {
   type: string
   summary: string
   img: string
+  link?: string
   relatedCount?: number
 }
 
@@ -105,6 +107,9 @@ interface ArticleOut {
   published: string
   score: number | null
   related_ids: string[]
+  link?: string | null
+  thumbnail_url?: string | null
+  thumbnail_path?: string | null
 }
 
 const AXIS_CLASSES = ['indigo', 'amber', 'moss', 'rose'] as const
@@ -128,7 +133,8 @@ function adaptBriefingArticle(a: ArticleOut): BriefingArticle {
     axisClass: axisClassFor(primary),
     type: a.content_type,
     summary: a.summary,
-    img: '', // pas de miniature dans ArticleOut
+    img: thumbOf(a),
+    link: safeUrl(a.link),
     relatedCount: a.related_ids.length,
   }
 }

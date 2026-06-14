@@ -14,6 +14,7 @@ export interface ExplorerArticle {
   type: string
   summary: string
   img: string
+  link?: string
   relatedCount: number
 }
 
@@ -70,6 +71,17 @@ interface ArticleOut {
   related_ids: string[]
   thesis_fr?: string | null
   link?: string | null
+  thumbnail_url?: string | null
+  thumbnail_path?: string | null
+}
+
+// Le corpus contient des liens dégénérés (ex. "=") — on ne garde qu'une vraie URL.
+export function safeUrl(v: string | null | undefined): string {
+  return v && /^https?:\/\//i.test(v) ? v : ''
+}
+
+export function thumbOf(a: { thumbnail_url?: string | null; thumbnail_path?: string | null }): string {
+  return safeUrl(a.thumbnail_url) || (a.thumbnail_path ?? '') || ''
 }
 
 interface TopicOut {
@@ -125,7 +137,8 @@ function adaptArticle(a: ArticleOut): ExplorerArticle {
     axisClass: axisClassFor(primary),
     type: a.content_type,
     summary: a.summary,
-    img: '', // pas de miniature dans ArticleOut
+    img: thumbOf(a),
+    link: safeUrl(a.link),
     relatedCount: a.related_ids.length,
   }
 }

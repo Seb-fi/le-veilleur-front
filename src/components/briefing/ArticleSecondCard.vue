@@ -14,7 +14,7 @@ const fb = computed(() => feedback.get(props.article.id))
 
 <template>
   <article class="acard">
-    <div class="acard-thumb">
+    <div v-if="article.img" class="acard-thumb">
       <img :src="article.img" loading="lazy" alt="" />
     </div>
 
@@ -70,14 +70,21 @@ const fb = computed(() => feedback.get(props.article.id))
     </div>
 
     <div class="acard-links">
-      <a class="card-link" href="#" @click="feedback.markImplicit(article.id, 'source_clicked')">
+      <a
+        v-if="article.link"
+        class="card-link"
+        :href="article.link"
+        target="_blank"
+        rel="noopener"
+        @click="feedback.markImplicit(article.id, 'source_clicked')"
+      >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M14 5h5v5M19 5l-9 9M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/>
         </svg>
         Source originale
       </a>
-      <span class="card-link-sep" />
-      <a class="card-link" href="#" @click="feedback.markImplicit(article.id, 'related_clicked')">
+      <span v-if="article.link" class="card-link-sep" />
+      <a class="card-link" href="#" @click.prevent="feedback.markImplicit(article.id, 'related_clicked')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M10 14a4 4 0 0 1 0-5.7l2.8-2.8a4 4 0 1 1 5.7 5.7l-1.4 1.4M14 10a4 4 0 0 1 0 5.7l-2.8 2.8a4 4 0 1 1-5.7-5.7l1.4-1.4"/>
         </svg>

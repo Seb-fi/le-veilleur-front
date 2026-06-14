@@ -13,7 +13,7 @@ const fb = computed(() => feedback.get(props.article.id))
 </script>
 
 <template>
-  <article class="article">
+  <article class="article" :class="{ 'article--noimg': !article.img }">
     <div class="article-body">
       <div class="a-head">
         <SourceBadge :source="article.source" />
@@ -77,27 +77,39 @@ const fb = computed(() => feedback.get(props.article.id))
               <path d="M5 12h14" />
             </svg>
           </button>
-          <button
+          <a
+            v-if="article.link"
             class="act"
+            :href="article.link"
+            target="_blank"
+            rel="noopener"
             title="Ouvrir la source"
             @click="feedback.markImplicit(article.id, 'source_clicked')"
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
               <path d="M14 5h5v5M19 5l-9 9M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5" />
             </svg>
-          </button>
+          </a>
         </div>
       </div>
 
       <div class="card-links">
-        <a class="card-link" href="#" title="Ouvrir la source originale" @click="feedback.markImplicit(article.id, 'source_clicked')">
+        <a
+          v-if="article.link"
+          class="card-link"
+          :href="article.link"
+          target="_blank"
+          rel="noopener"
+          title="Ouvrir la source originale"
+          @click="feedback.markImplicit(article.id, 'source_clicked')"
+        >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M14 5h5v5M19 5l-9 9M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5" />
           </svg>
           Source originale
         </a>
-        <span class="card-link-sep" />
-        <a class="card-link" href="#" title="Articles liés" @click="feedback.markImplicit(article.id, 'related_clicked')">
+        <span v-if="article.link" class="card-link-sep" />
+        <a class="card-link" href="#" title="Articles liés" @click.prevent="feedback.markImplicit(article.id, 'related_clicked')">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M10 14a4 4 0 0 1 0-5.7l2.8-2.8a4 4 0 1 1 5.7 5.7l-1.4 1.4M14 10a4 4 0 0 1 0 5.7l-2.8 2.8a4 4 0 1 1-5.7-5.7l1.4-1.4" />
           </svg>
@@ -106,7 +118,7 @@ const fb = computed(() => feedback.get(props.article.id))
       </div>
     </div>
 
-    <div class="article-img">
+    <div v-if="article.img" class="article-img">
       <img :src="article.img" loading="lazy" alt="" />
     </div>
   </article>
@@ -122,6 +134,8 @@ const fb = computed(() => feedback.get(props.article.id))
   cursor: pointer;
   transition: opacity var(--motion-quick) var(--ease-out);
 }
+
+.article--noimg { grid-template-columns: 1fr; }
 
 .article:first-child { padding-top: 6px; }
 
