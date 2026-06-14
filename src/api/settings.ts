@@ -27,3 +27,18 @@ export function patchSettings(patch: SettingsPatch): Promise<Settings> {
 export function downloadSettings(): Promise<Blob> {
   return api.download('/settings/download')
 }
+
+// Le même endpoint renvoie le user_context complet en JSON — seule lecture du
+// profil exposée au front (pas de GET /user-context dédié). Sert la synthèse Profil.
+export type UserContext = Record<string, unknown>
+
+export function fetchUserContext(): Promise<UserContext> {
+  return api.get<UserContext>('/settings/download')
+}
+
+// POST /api/settings/import — upload d'un profil JSON (admin/test, INV-U10).
+export function importUserContext(file: File): Promise<Settings> {
+  const form = new FormData()
+  form.append('file', file)
+  return api.upload<Settings>('/settings/import', form)
+}
