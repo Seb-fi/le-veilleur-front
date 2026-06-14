@@ -1,11 +1,28 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, onMounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
+import { useAuthStore } from '@/stores/useAuthStore'
 
 // L'écran verrouillé (PRD #49) s'affiche plein écran, sans la coquille applicative.
 const route = useRoute()
+const router = useRouter()
 const isLocked = computed(() => route.path === '/locked')
+
+// Identité de session + redirection onboarding (INV-U10) : un utilisateur sans
+// profil est conduit vers l'entretien avant de voir un briefing vide.
+const auth = useAuthStore()
+onMounted(async () => {
+  if (route.path === '/locked') return
+  try {
+    await auth.load()
+    if (auth.me && !auth.me.has_profile && route.path !== '/onboarding') {
+      router.replace('/onboarding')
+    }
+  } catch {
+    /* 401 géré par client.ts (→ /locked) ; pas d'autre action ici. */
+  }
+})
 </script>
 
 <template>

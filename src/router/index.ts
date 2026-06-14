@@ -15,6 +15,7 @@ const router = createRouter({
     { path: '/explorer/sujets',    component: () => import('../views/SujetsView.vue') },
     { path: '/explorer/carto',     component: () => import('../views/CartoView.vue') },
     { path: '/memoire',            component: () => import('../views/MemoireView.vue') },
+    { path: '/onboarding',         component: () => import('../views/OnboardingView.vue') },
     { path: '/profil',             component: () => import('../views/ProfilView.vue') },
   ],
 })
