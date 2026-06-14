@@ -26,3 +26,13 @@ test('l’onboarding ouvre l’entretien avec une amorce', async ({ page }) => {
   // L'amorce (premier message assistant) apparaît après le tour initial.
   await expect(page.locator('.onb-msg--assistant').first()).toBeVisible()
 })
+
+test('le feedback « Pertinent » est un toggle réversible (état optimiste)', async ({ page }) => {
+  await page.goto('/#/explorer/articles')
+  const relevant = page.locator('.article').first().getByTitle('Pertinent')
+  await expect(relevant).toHaveAttribute('aria-pressed', 'false')
+  await relevant.click()
+  await expect(relevant).toHaveAttribute('aria-pressed', 'true')
+  await relevant.click()
+  await expect(relevant).toHaveAttribute('aria-pressed', 'false')
+})

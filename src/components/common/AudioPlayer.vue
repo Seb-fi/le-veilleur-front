@@ -8,6 +8,9 @@ defineProps<{
   filesize: string
 }>()
 
+// Écoute (PRD #49 / feedback) : le % d'écoute est remonté à la pause et au démontage.
+const emit = defineEmits<{ listen: [percent: number] }>()
+
 const WAVE_BARS = [
   { h: 40, d: 0 },    { h: 75, d: 0.1 },  { h: 55, d: 0.2 },  { h: 90, d: 0.3 },
   { h: 35, d: 0.4 },  { h: 65, d: 0.5 },  { h: 80, d: 0.15 }, { h: 45, d: 0.25 },
@@ -44,6 +47,7 @@ function togglePlay() {
   } else {
     if (timer) clearInterval(timer)
     timer = null
+    emit('listen', progress.value * 100) // remontée à la pause
   }
 }
 
@@ -58,7 +62,10 @@ function scrub(e: MouseEvent) {
   elapsed.value = Math.round(ratio * durationSecs.value)
 }
 
-onUnmounted(() => { if (timer) clearInterval(timer) })
+onUnmounted(() => {
+  if (timer) clearInterval(timer)
+  if (elapsed.value > 0) emit('listen', progress.value * 100) // remontée au départ de la page
+})
 </script>
 
 <template>

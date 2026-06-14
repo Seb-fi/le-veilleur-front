@@ -3,6 +3,7 @@ import { onMounted } from 'vue'
 import { useBriefingStore } from '../stores/useBriefingStore'
 import { useThreadsStore } from '../stores/useThreadsStore'
 import { useSerendipityStore } from '../stores/useSerendipityStore'
+import { useFeedbackStore } from '../stores/useFeedbackStore'
 import BriefingMasthead from '../components/briefing/BriefingMasthead.vue'
 import BriefingGreeting from '../components/briefing/BriefingGreeting.vue'
 import AudioPlayer from '../components/common/AudioPlayer.vue'
@@ -17,11 +18,17 @@ import PrevBriefings from '../components/briefing/PrevBriefings.vue'
 const store = useBriefingStore()
 const threadsStore = useThreadsStore()
 const serendipityStore = useSerendipityStore()
+const feedback = useFeedbackStore()
 onMounted(() => {
   store.load()
   threadsStore.load()
   serendipityStore.load()
 })
+
+// % d'écoute audio → /briefings/{date}/listen (ISO-gardé dans le store).
+function onListen(percent: number) {
+  if (store.data) feedback.markListen(store.data.date, percent)
+}
 </script>
 
 <template>
@@ -50,6 +57,7 @@ onMounted(() => {
         :duration="store.data.audioDuration"
         :edition="store.data.date"
         :filesize="store.data.audioSize"
+        @listen="onListen"
       />
 
       <!-- Fils réels (S2 /threads). Omis si vide/cold-start — jamais moqué en prod. -->
