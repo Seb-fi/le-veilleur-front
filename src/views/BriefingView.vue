@@ -52,7 +52,10 @@ function onListen(percent: number) {
         :active-thread="store.data.activeThread"
       />
 
+      <!-- Lecteur audio simulé : affiché tant que la lecture réelle (audio_url) n'est
+           pas câblée — omis en mode réel pour ne pas simuler un player sur données réelles. -->
       <AudioPlayer
+        v-if="store.data.audioTitle"
         :title="store.data.audioTitle"
         :duration="store.data.audioDuration"
         :edition="store.data.date"
@@ -67,13 +70,13 @@ function onListen(percent: number) {
         @select="threadsStore.openDetail"
       />
 
-      <!-- Dossier du jour -->
-      <div class="kicker">
+      <!-- Dossier du jour — carte omise tant que l'endpoint éditorial S1 n'existe pas. -->
+      <div v-if="store.data.dossier" class="kicker">
         <span class="kicker-l">— Pourquoi ce sujet aujourd'hui —</span>
       </div>
 
       <div class="card-grid">
-        <DossierCard :dossier="store.data.dossier" />
+        <DossierCard v-if="store.data.dossier" :dossier="store.data.dossier" />
         <ArticleSecondCard
           v-for="article in store.data.alsoArticles"
           :key="article.id"
@@ -81,11 +84,13 @@ function onListen(percent: number) {
         />
       </div>
 
-      <!-- Brèves -->
-      <div class="kicker">
-        <span class="kicker-l">— Brèves —</span>
-      </div>
-      <BrevesSection :breves="store.data.breves" />
+      <!-- Brèves — omises si pas de source (pas de fabrication en prod). -->
+      <template v-if="store.data.breves.length">
+        <div class="kicker">
+          <span class="kicker-l">— Brèves —</span>
+        </div>
+        <BrevesSection :breves="store.data.breves" />
+      </template>
 
       <!-- Signaux faibles · à la frontière (sérendipité réelle, omise si vide) -->
       <template v-if="serendipityStore.items.length">

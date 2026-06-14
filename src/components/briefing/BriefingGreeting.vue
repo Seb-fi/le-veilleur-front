@@ -1,26 +1,31 @@
 <script setup lang="ts">
-defineProps<{
+const props = defineProps<{
   name: string
   sourcesScanned: number
   signalCount: number
   readMinutes: number
   activeThread: { topic: string; days: number; shift: string }
 }>()
+
+// Métadonnées d'en-tête (sources/signaux/minutes) et panneau « fil » : affichés
+// seulement quand on a la donnée — masqués en mode réel (non exposés backend).
+const hasStats = props.sourcesScanned > 0
+const hasActiveThread = !!props.activeThread.topic
 </script>
 
 <template>
-  <section class="brief-greet">
+  <section class="brief-greet" :class="{ 'brief-greet--solo': !hasActiveThread }">
     <div>
       <div class="bg-eyebrow">Briefing du matin</div>
-      <h1 class="bg-hello">Bonjour <em>{{ name }}</em>.</h1>
-      <p class="bg-state">
+      <h1 class="bg-hello">Bonjour<template v-if="name"> <em>{{ name }}</em></template>.</h1>
+      <p v-if="hasStats" class="bg-state">
         Le système a parcouru <b>{{ sourcesScanned }} sources</b> cette nuit.
         <b>{{ signalCount === 5 ? 'Cinq' : signalCount + ' signaux' }}</b> demandent votre attention —
         <b>{{ readMinutes }} minutes</b> pour les comprendre, le temps d'un trajet.
       </p>
     </div>
 
-    <div class="bg-r">
+    <div v-if="hasActiveThread" class="bg-r">
       <div class="bg-thread-h">
         <span class="bg-thread-dot" />
         Le fil que vous suivez
@@ -41,6 +46,10 @@ defineProps<{
   gap: 64px;
   align-items: end;
   border-bottom: var(--border-rule);
+}
+
+.brief-greet--solo {
+  grid-template-columns: 1fr;
 }
 
 .bg-eyebrow {

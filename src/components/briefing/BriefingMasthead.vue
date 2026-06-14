@@ -1,14 +1,24 @@
 <script setup lang="ts">
-defineProps<{
+import { computed } from 'vue'
+
+const props = defineProps<{
   edition: number
   date: string
   time: string
 }>()
+
+// Ligne d'en-tête composée des seuls éléments disponibles (édition/heure non
+// suivis côté backend → masqués en mode réel).
+const editionLine = computed(() =>
+  [props.edition ? `Édition n°${props.edition}` : '', props.date, props.time]
+    .filter(Boolean)
+    .join(' · '),
+)
 </script>
 
 <template>
   <header class="masthead">
-    <div class="mast-edition">Édition n°{{ edition }} · {{ date }} · {{ time }}</div>
+    <div class="mast-edition">{{ editionLine }}</div>
     <div class="mast-title">Le <em>Veilleur</em></div>
     <div class="mast-rule" />
     <div class="mast-promise"><em>Rester à la pointe de votre domaine sans y consacrer votre temps.</em></div>

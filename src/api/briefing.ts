@@ -75,13 +75,81 @@ export interface BriefingData {
   audioDuration: string
   audioSize: string
   threads: Thread[]
-  dossier: Dossier
+  // Dossier éditorial : pas de source structurée tant que l'endpoint éditorial S1
+  // n'existe pas (Couche C = narration audio). null → carte omise (jamais moqué).
+  dossier: Dossier | null
   alsoArticles: BriefingArticle[]
   breves: Breve[]
   faibles: FaibleItem[]
   prevBriefings: PrevBriefing[]
 }
 
-export function fetchBriefingToday(): Promise<BriefingData> {
-  return api.get<BriefingData>('/briefings/today')
+// ── Contrats backend (docs/openapi.json) ──────────────────────────────────────
+interface BriefingOut {
+  id: string
+  date: string
+  date_label: string
+  article_ids: string[]
+  article_count: number
+  has_audio: boolean
+  audio_url: string | null
+}
+
+interface ArticleOut {
+  id: string
+  title: string
+  summary: string
+  labels: string[]
+  content_type: string
+  source: string
+  published: string
+  score: number | null
+  related_ids: string[]
+}
+
+const AXIS_CLASSES = ['indigo', 'amber', 'moss', 'rose'] as const
+function axisClassFor(key: string): BriefingArticle['axisClass'] {
+  let h = 0
+  for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0
+  return AXIS_CLASSES[h % AXIS_CLASSES.length]
+}
+
+function adaptBriefingArticle(a: ArticleOut): BriefingArticle {
+  const primary = a.labels[0] ?? ''
+  const human = primary.replace(/[_-]+/g, ' ').trim()
+  return {
+    id: a.id,
+    title: a.title,
+    source: a.source,
+    date: a.published,
+    score: a.score ?? 0,
+    why: '', // pertinence relative au profil absente du backend
+    axis: human ? human.charAt(0).toUpperCase() + human.slice(1) : 'Veille',
+    axisClass: axisClassFor(primary),
+    type: a.content_type,
+    summary: a.summary,
+    img: '', // pas de miniature dans ArticleOut
+    relatedCount: a.related_ids.length,
+  }
+}
+
+export function fetchBriefingTodayRaw(): Promise<BriefingOut> {
+  return api.get<BriefingOut>('/briefings/today')
+}
+
+export function fetchBriefingArticle(id: string): Promise<BriefingArticle> {
+  return api.get<ArticleOut>(`/articles/${encodeURIComponent(id)}`).then(adaptBriefingArticle)
+}
+
+export function fetchPrevBriefings(): Promise<PrevBriefing[]> {
+  return api.get<BriefingOut[]>('/briefings').then((rows) =>
+    rows.map((b, i) => ({
+      date: b.date_label,
+      edition: rows.length - i, // numéro d'édition non suivi backend → ordinal décroissant
+      title: '',
+      duration: '',
+      articleCount: b.article_count,
+      listened: false,
+    })),
+  )
 }
