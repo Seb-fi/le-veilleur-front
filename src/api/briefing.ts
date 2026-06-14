@@ -66,7 +66,8 @@ export interface Dossier {
 
 export interface BriefingData {
   edition: number
-  date: string
+  date: string // libellé d'affichage (« Dimanche 14 juin »)
+  briefingDate?: string // date ISO (YYYY-MM-DD) — pour POST /briefings/{date}/listen
   time: string
   greetingName: string
   sourcesScanned: number
@@ -76,6 +77,8 @@ export interface BriefingData {
   audioTitle: string
   audioDuration: string
   audioSize: string
+  audioUrl?: string // URL absolue du mp3 (réel) ; absent en mock → lecteur simulé
+  hasAudio?: boolean
   threads: Thread[]
   // Dossier éditorial : pas de source structurée tant que l'endpoint éditorial S1
   // n'existe pas (Couche C = narration audio). null → carte omise (jamais moqué).
@@ -137,6 +140,16 @@ function adaptBriefingArticle(a: ArticleOut): BriefingArticle {
     link: safeUrl(a.link),
     relatedCount: a.related_ids.length,
   }
+}
+
+// L'audio est servi à l'ORIGINE du backend (/audio/…), pas sous /api. On résout
+// la racine depuis VITE_API_BASE (statique, sans auth, supporte Range → <audio> direct).
+export function resolveAudioUrl(path: string | null): string {
+  if (!path) return ''
+  if (/^https?:\/\//i.test(path)) return path
+  const base = import.meta.env.VITE_API_BASE ?? '/api'
+  const root = base.replace(/\/api\/?$/, '')
+  return root + path
 }
 
 export function fetchBriefingTodayRaw(): Promise<BriefingOut> {

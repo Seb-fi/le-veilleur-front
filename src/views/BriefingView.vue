@@ -25,9 +25,9 @@ onMounted(() => {
   serendipityStore.load()
 })
 
-// % d'écoute audio → /briefings/{date}/listen (ISO-gardé dans le store).
+// % d'écoute audio → /briefings/{date}/listen (date ISO ; ISO-gardé dans le store).
 function onListen(percent: number) {
-  if (store.data) feedback.markListen(store.data.date, percent)
+  if (store.data?.briefingDate) feedback.markListen(store.data.briefingDate, percent)
 }
 </script>
 
@@ -52,14 +52,14 @@ function onListen(percent: number) {
         :active-thread="store.data.activeThread"
       />
 
-      <!-- Lecteur audio simulé : affiché tant que la lecture réelle (audio_url) n'est
-           pas câblée — omis en mode réel pour ne pas simuler un player sur données réelles. -->
+      <!-- Lecture audio réelle (audio_url) si dispo ; sinon player simulé (mock/design). -->
       <AudioPlayer
-        v-if="store.data.audioTitle"
+        v-if="store.data.hasAudio || store.data.audioTitle"
         :title="store.data.audioTitle"
         :duration="store.data.audioDuration"
         :edition="store.data.date"
         :filesize="store.data.audioSize"
+        :src="store.data.audioUrl"
         @listen="onListen"
       />
 

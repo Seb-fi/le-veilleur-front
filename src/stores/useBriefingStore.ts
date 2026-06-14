@@ -4,6 +4,7 @@ import {
   fetchBriefingTodayRaw,
   fetchBriefingArticle,
   fetchPrevBriefings,
+  resolveAudioUrl,
 } from '../api/briefing'
 import { fetchUserContext } from '../api/settings'
 import type { BriefingData } from '../api/briefing'
@@ -58,15 +59,18 @@ export const useBriefingStore = defineStore('briefing', () => {
     return {
       edition: 0, // non suivi backend → masqué
       date: today.date_label,
+      briefingDate: today.date, // ISO, pour l'écoute audio
       time: '',
       greetingName: deriveGreeting(ctx),
       sourcesScanned: 0, // métadonnées d'en-tête non exposées → ligne d'état masquée
       signalCount: 0,
       readMinutes: 0,
       activeThread: { topic: '', days: 0, shift: '' }, // panneau « fil » masqué si vide
-      audioTitle: '',
-      audioDuration: '',
+      audioTitle: today.has_audio ? `Votre briefing du ${today.date_label}` : '',
+      audioDuration: '', // durée réelle lue depuis les métadonnées du <audio>
       audioSize: '',
+      audioUrl: resolveAudioUrl(today.audio_url),
+      hasAudio: today.has_audio,
       threads: [], // alimenté par useThreadsStore
       dossier: null, // attend l'endpoint éditorial S1 → carte omise
       alsoArticles,

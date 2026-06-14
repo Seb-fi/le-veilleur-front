@@ -1,11 +1,13 @@
 <script setup lang="ts">
-import { ref, computed, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, watch } from 'vue'
 
-defineProps<{
+// `src` présent → lecture audio RÉELLE (<audio>) ; absent → mode simulé (mock/design).
+const props = defineProps<{
   title: string
   duration: string
   edition: string
   filesize: string
+  src?: string
 }>()
 
 // Écoute (PRD #49 / feedback) : le % d'écoute est remonté à la pause et au démontage.
@@ -21,13 +23,16 @@ const WAVE_BARS = [
 const SPEEDS = [0.75, 1, 1.5, 2]
 const SPEED_LABELS = ['0,75×', '1×', '1,5×', '2×']
 
+const isReal = computed(() => !!props.src)
+const audioEl = ref<HTMLAudioElement | null>(null)
 const playing = ref(false)
 const speed = ref(1)
-const elapsed = ref(174) // 02:54 in seconds
+const elapsed = ref(0)
+const durationSecs = ref(0)
 
 function parseDuration(d: string): number {
-  const [m, s] = d.split(':').map(Number)
-  return m * 60 + s
+  const [m, s] = (d || '0:0').split(':').map(Number)
+  return (m || 0) * 60 + (s || 0)
 }
 
 function formatTime(s: number): string {
@@ -36,40 +41,76 @@ function formatTime(s: number): string {
   return `${m.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`
 }
 
+// Mode simulé : durée fixée depuis la prop (ou 8:42 par défaut, démo).
+if (!isReal.value) durationSecs.value = parseDuration(props.duration || '08:42')
+
 let timer: ReturnType<typeof setInterval> | null = null
 
 function togglePlay() {
+  if (isReal.value) {
+    const el = audioEl.value
+    if (!el) return
+    if (el.paused) { el.play().catch(() => {}); playing.value = true }
+    else { el.pause(); playing.value = false; emitListen() }
+    return
+  }
+  // Simulé : on avance un compteur.
   playing.value = !playing.value
   if (playing.value) {
-    timer = setInterval(() => {
-      elapsed.value += speed.value
-    }, 1000)
+    timer = setInterval(() => { elapsed.value += speed.value }, 1000)
   } else {
     if (timer) clearInterval(timer)
     timer = null
-    emit('listen', progress.value * 100) // remontée à la pause
+    emitListen()
   }
 }
 
-const durationSecs = computed(() => parseDuration('08:42'))
-const progress = computed(() => Math.min(elapsed.value / durationSecs.value, 1))
+// Handlers <audio> réel.
+function onTimeUpdate() { if (audioEl.value) elapsed.value = audioEl.value.currentTime }
+function onLoadedMeta() { if (audioEl.value) durationSecs.value = audioEl.value.duration || 0 }
+function onEnded() { playing.value = false; emit('listen', 100) }
+
+const progress = computed(() =>
+  durationSecs.value ? Math.min(elapsed.value / durationSecs.value, 1) : 0,
+)
 const currentTimeLabel = computed(() => formatTime(elapsed.value))
+const durationLabel = computed(() =>
+  durationSecs.value ? formatTime(durationSecs.value) : props.duration || '',
+)
 
 function scrub(e: MouseEvent) {
   const bar = e.currentTarget as HTMLElement
   const rect = bar.getBoundingClientRect()
   const ratio = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width))
   elapsed.value = Math.round(ratio * durationSecs.value)
+  if (isReal.value && audioEl.value) audioEl.value.currentTime = elapsed.value
+}
+
+watch(speed, (s) => { if (isReal.value && audioEl.value) audioEl.value.playbackRate = s })
+
+function emitListen() {
+  if (durationSecs.value) emit('listen', progress.value * 100)
 }
 
 onUnmounted(() => {
   if (timer) clearInterval(timer)
-  if (elapsed.value > 0) emit('listen', progress.value * 100) // remontée au départ de la page
+  if (elapsed.value > 0) emitListen() // remontée au départ de la page
 })
 </script>
 
 <template>
   <section class="audio-hero">
+    <audio
+      v-if="isReal"
+      ref="audioEl"
+      :src="src"
+      preload="metadata"
+      @timeupdate="onTimeUpdate"
+      @loadedmetadata="onLoadedMeta"
+      @ended="onEnded"
+      @pause="playing = false"
+      @play="playing = true"
+    />
     <button class="audio-disc" :class="{ playing }" aria-label="Écouter le briefing" @click="togglePlay">
       <span class="ad-play">
         <svg v-if="!playing" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4l13 8-13 8z"/></svg>
@@ -87,7 +128,7 @@ onUnmounted(() => {
             <circle cx="8" cy="19" r="1.5"/><circle cx="16" cy="19" r="1.5"/>
             <path d="M7 7l1.5-2h7L17 7"/>
           </svg>
-          {{ duration }} · Format trajet
+          {{ durationLabel }} · Format trajet
         </span>
       </div>
 
@@ -98,7 +139,7 @@ onUnmounted(() => {
         <div class="ap-bar" role="slider" :aria-valuenow="elapsed" @click="scrub">
           <div class="ap-fill" :style="{ width: progress * 100 + '%' }" />
         </div>
-        <span>{{ duration }}</span>
+        <span>{{ durationLabel }}</span>
       </div>
 
       <div class="audio-speed">
@@ -119,7 +160,7 @@ onUnmounted(() => {
           :style="{ height: bar.h + '%', animationDelay: bar.d + 's' }"
         />
       </div>
-      <div class="audio-filesize">{{ duration }} · {{ filesize }}</div>
+      <div class="audio-filesize">{{ durationLabel }}<template v-if="filesize"> · {{ filesize }}</template></div>
     </div>
   </section>
 </template>
