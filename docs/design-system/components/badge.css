@@ -1,0 +1,62 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * components/badge.css
+ *
+ * Tags discrets (pills bordées) et status dots.
+ * Toujours en mono, jamais en sans-serif.
+ * ============================================================ */
+
+/* ============ Tag pill ============ */
+.v-tag {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.06em;
+  padding: 3px 9px;
+  border-radius: var(--radius-pill);
+  color: var(--color-ink-3);
+  background: transparent;
+  border: var(--border-rule);
+}
+.v-tag--axis    { color: var(--color-indigo); border-color: oklch(80% 0.05 265); }
+.v-tag--tension { color: var(--color-rose);   border-color: oklch(80% 0.05 25); }
+.v-tag--emerging{ color: var(--color-moss);   border-color: oklch(80% 0.05 155); }
+
+/* ============ Status dot ============ */
+.v-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--color-ink-4);
+  display: inline-block;
+  flex: none;
+}
+.v-dot--indigo { background: var(--color-indigo);
+  box-shadow: 0 0 0 3px oklch(38% 0.09 265 / 0.12); }
+.v-dot--moss   { background: var(--color-moss); }
+.v-dot--amber  { background: var(--color-amber); }
+.v-dot--rose   { background: var(--color-rose); opacity: 0.7; }
+
+/* ============ Status pill — used in signal block ============ */
+.v-status {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: var(--weight-medium);
+}
+.v-status::before {
+  content: "";
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.v-status--emergent   { color: var(--color-amber); }
+.v-status--convergent { color: var(--color-indigo); }
+.v-status--tension    { color: var(--color-rose); }
+.v-status--deep       { color: var(--color-indigo); }

@@ -1,0 +1,58 @@
+import { getToken, getActAs, clearToken } from './auth'
+
+const BASE = import.meta.env.VITE_API_BASE ?? '/api'
+
+function authHeaders(extra?: HeadersInit): Headers {
+  const headers = new Headers(extra)
+  const token = getToken()
+  if (token) headers.set('Authorization', `Bearer ${token}`)
+  const actAs = getActAs()
+  if (actAs) headers.set('X-Act-As', actAs)
+  return headers
+}
+
+// Fail-closed (INV-U8) : token absent/invalide/révoqué → purge + signal vers
+// l'écran « lien d'invitation requis » (capté dans main.ts → /locked).
+function onUnauthorized(): void {
+  clearToken()
+  window.dispatchEvent(new Event('auth:unauthorized'))
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = authHeaders(init?.headers)
+  // JSON par défaut, sauf upload FormData (le navigateur pose le boundary multipart).
+  if (!(init?.body instanceof FormData) && !headers.has('Content-Type')) {
+    headers.set('Content-Type', 'application/json')
+  }
+  const res = await fetch(`${BASE}${path}`, { ...init, headers })
+  if (res.status === 401) {
+    onUnauthorized()
+    throw new Error("API 401: lien d'invitation requis")
+  }
+  if (!res.ok) {
+    const text = await res.text().catch(() => '')
+    throw new Error(`API ${res.status}: ${text}`)
+  }
+  return res.json() as Promise<T>
+}
+
+async function requestBlob(path: string): Promise<Blob> {
+  const res = await fetch(`${BASE}${path}`, { headers: authHeaders() })
+  if (res.status === 401) {
+    onUnauthorized()
+    throw new Error("API 401: lien d'invitation requis")
+  }
+  if (!res.ok) throw new Error(`API ${res.status}`)
+  return res.blob()
+}
+
+export const api = {
+  get: <T>(path: string) => request<T>(path),
+  download: (path: string) => requestBlob(path),
+  post: <T>(path: string, body?: unknown) =>
+    request<T>(path, { method: 'POST', body: body !== undefined ? JSON.stringify(body) : undefined }),
+  patch: <T>(path: string, body: unknown) =>
+    request<T>(path, { method: 'PATCH', body: JSON.stringify(body) }),
+  upload: <T>(path: string, form: FormData) =>
+    request<T>(path, { method: 'POST', body: form }),
+}

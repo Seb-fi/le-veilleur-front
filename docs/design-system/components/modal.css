@@ -1,0 +1,159 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * components/modal.css
+ *
+ * Modal de décision (déplacer vs lier un article entre pistes).
+ * Centré dans son conteneur (généralement la zone du graphe),
+ * avec overlay foncé semi-transparent.
+ * ============================================================ */
+
+.v-modal-overlay {
+  position: absolute;
+  inset: 0;
+  background: oklch(0% 0 0 / 0.42);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 30;
+}
+.v-modal-overlay[data-open="true"],
+.v-modal-overlay.is-open { display: flex; }
+
+.v-modal {
+  background: var(--color-paper);
+  border: var(--border-rule);
+  border-radius: var(--radius-lg);
+  width: 480px;
+  max-width: calc(100% - 32px);
+  box-shadow: var(--shadow-modal);
+  overflow: hidden;
+  animation: modalIn var(--motion-mid) var(--ease-out);
+}
+@keyframes modalIn {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* ============ Sections ============ */
+.v-modal__head {
+  padding: 22px var(--sp-6) var(--sp-4);
+  border-bottom: var(--border-thin);
+}
+.v-modal__eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-ink-4);
+  margin-bottom: var(--sp-3);
+  font-weight: var(--weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.v-modal__eyebrow::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: var(--color-ink-4);
+}
+.v-modal__title {
+  font-family: var(--font-serif);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--ls-h2);
+  line-height: var(--lh-snug);
+  color: var(--color-ink);
+  margin: 0;
+  text-wrap: pretty;
+}
+.v-modal__title em {
+  font-style: italic;
+  color: var(--color-indigo);
+  font-weight: var(--weight-regular);
+}
+.v-modal__lead {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-body-sm);
+  line-height: var(--lh-normal);
+  color: var(--color-ink-3);
+  margin-top: var(--sp-3);
+  text-wrap: pretty;
+}
+.v-modal__lead b {
+  font-style: normal;
+  font-weight: var(--weight-medium);
+  color: var(--color-ink-2);
+}
+
+.v-modal__body {
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.v-modal__foot {
+  padding: var(--sp-4) var(--sp-6) var(--sp-5);
+  display: flex;
+  justify-content: flex-end;
+  border-top: var(--border-thin);
+}
+
+/* ============ Choice button ============ */
+.v-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--sp-4) 18px;
+  text-align: left;
+  background: var(--color-bg);
+  border: var(--border-rule);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: border-color var(--motion-quick) var(--ease-out),
+              background var(--motion-quick) var(--ease-out);
+  width: 100%;
+}
+.v-choice:hover {
+  border-color: var(--color-indigo);
+  background: var(--color-paper);
+}
+.v-choice__label {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-indigo);
+  font-weight: var(--weight-medium);
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.v-choice__label::before {
+  content: "";
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--color-indigo);
+}
+.v-choice__title {
+  font-family: var(--font-serif);
+  font-size: var(--type-h3);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--ls-h3);
+  color: var(--color-ink);
+  line-height: var(--lh-snug);
+  text-wrap: pretty;
+}
+.v-choice__sub {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-caption);
+  line-height: var(--lh-normal);
+  color: var(--color-ink-3);
+  text-wrap: pretty;
+}
+.v-choice:hover .v-choice__title { color: var(--color-indigo); }

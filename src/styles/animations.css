@@ -1,0 +1,41 @@
+/* ============================================================
+ * Le Veilleur — Keyframe animations
+ * Référence : memoire-active.html
+ * ============================================================ */
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 4px oklch(68% 0.12 75 / 0.18); }
+  50%       { box-shadow: 0 0 0 8px oklch(68% 0.12 75 / 0); }
+}
+
+@keyframes wave {
+  0%, 100% { transform: scaleY(1); }
+  50%       { transform: scaleY(0.35); }
+}
+
+@keyframes overlayIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes modalIn {
+  from { opacity: 0; transform: scale(0.97) translateY(4px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes newPiste {
+  0%   { stroke-dasharray: 3 2; r: 8; opacity: 0; }
+  50%  { opacity: 1; }
+  100% { stroke-dasharray: none; opacity: 1; }
+}
+
+@keyframes newArticle {
+  0%   { opacity: 0; r: 2; }
+  60%  { opacity: 1; }
+  100% { opacity: 1; r: 6; }
+}

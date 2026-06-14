@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.local
+.env*.local
+.DS_Store
+*:Zone.Identifier
+# Symlinks de confort vers le repo backend (llm-lab) — hors versioning front.
+frontend_old
+lien_symbolique_back

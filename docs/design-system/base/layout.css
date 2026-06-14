@@ -1,0 +1,100 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * base/layout.css
+ *
+ * Conteneurs et grilles éditoriales. Importer après les tokens
+ * et le reset.
+ * ============================================================ */
+
+.v-shell {
+  max-width: var(--layout-content-max);
+  margin: 0 auto;
+  padding: 0 var(--layout-page-padding) var(--sp-24);
+}
+
+/* ----- Header de page éditorial ----- */
+.v-page-header {
+  padding: var(--sp-12) 0 var(--sp-5);
+  border-bottom: var(--border-rule);
+}
+.v-page-header__eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  margin-bottom: var(--sp-4);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  font-weight: var(--weight-medium);
+}
+.v-page-header__eyebrow::after {
+  content: "";
+  flex: 1;
+  max-width: 120px;
+  height: 1px;
+  background: var(--color-rule-2);
+}
+.v-page-header__eyebrow .mark {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: var(--color-indigo);
+  box-shadow: 0 0 0 3px oklch(38% 0.09 265 / 0.15);
+}
+
+/* ----- Grille principale Mémoire active (rail + lecture) ----- */
+.v-mem-layout {
+  display: grid;
+  grid-template-columns: var(--layout-rail-width) minmax(0, 1fr);
+  gap: var(--layout-section-gap);
+  padding-top: var(--sp-8);
+  align-items: start;
+}
+
+/* ----- Colonne de lecture ----- */
+.v-piste-column {
+  min-width: 0;
+  max-width: var(--layout-piste-max);
+}
+
+/* ----- Rail gauche (sticky, scrollable) ----- */
+.v-rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-8);
+  position: sticky;
+  top: var(--sp-6);
+  align-self: start;
+  max-height: calc(100vh - var(--sp-12));
+  overflow-y: auto;
+  padding-right: var(--sp-1);
+}
+.v-rail::-webkit-scrollbar { width: 0; }
+
+/* ----- Section de rail ----- */
+.v-rail-section { display: flex; flex-direction: column; }
+.v-rail-section__head {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  color: var(--color-ink-4);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding-bottom: var(--sp-3);
+  border-bottom: var(--border-thin);
+  margin-bottom: var(--sp-2);
+  font-weight: var(--weight-medium);
+}
+
+/* ----- Visually hidden ----- */
+.v-sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
+}

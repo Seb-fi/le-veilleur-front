@@ -1,0 +1,52 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * tokens/motion.css
+ *
+ * Mouvements discrets. Jamais de spectaculaire, jamais long.
+ * Le système doit rester silencieux : la majorité des transitions
+ * sous 200ms, avec des courbes éditoriales (pas de "bouncy").
+ * ============================================================ */
+
+:root {
+  /* ------------------------------------------------------------
+   * Durations
+   * ------------------------------------------------------------ */
+  --motion-quick:    120ms;  /* hover, tap                       */
+  --motion-base:     180ms;  /* default                          */
+  --motion-mid:      280ms;  /* popovers, modal entrée           */
+  --motion-slow:     400ms;  /* expansion de cluster             */
+  --motion-bloom:   1600ms;  /* apparition d'une piste créée     */
+
+  /* ------------------------------------------------------------
+   * Easings — toutes éditoriales, pas de bounce
+   * ------------------------------------------------------------ */
+  --ease-out:       cubic-bezier(0.2, 0.7, 0.3, 1.0);
+  --ease-in:        cubic-bezier(0.7, 0.0, 0.84, 0.0);
+  --ease-in-out:    cubic-bezier(0.4, 0.0, 0.2, 1.0);
+  --ease-soft:      cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+  /* ------------------------------------------------------------
+   * Standard transitions — à composer dans les composants
+   * ------------------------------------------------------------ */
+  --tr-hover:    color    var(--motion-quick) var(--ease-out),
+                 background var(--motion-quick) var(--ease-out);
+
+  --tr-fade:     opacity  var(--motion-base)  var(--ease-out),
+                 visibility var(--motion-base) var(--ease-out);
+
+  --tr-pop:      opacity  var(--motion-mid)   var(--ease-out),
+                 transform var(--motion-mid)  var(--ease-out),
+                 visibility var(--motion-mid) var(--ease-out);
+}
+
+/* Respecter la préférence "réduire les animations" */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-quick: 0ms;
+    --motion-base:  0ms;
+    --motion-mid:   0ms;
+    --motion-slow:  0ms;
+    --motion-bloom: 0ms;
+  }
+  * { animation: none !important; transition-duration: 0ms !important; }
+}

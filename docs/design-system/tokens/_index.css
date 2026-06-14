@@ -1,0 +1,15 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * tokens/_index.css
+ *
+ * Import master des tokens. C'est le seul fichier à importer
+ * dans votre app Vue :
+ *
+ *   // main.ts
+ *   import "@veilleur/design-system/tokens"
+ * ============================================================ */
+
+@import "./colors.css";
+@import "./typography.css";
+@import "./spacing.css";
+@import "./motion.css";

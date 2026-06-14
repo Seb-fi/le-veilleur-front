@@ -1,0 +1,174 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * components/note.css
+ *
+ * Notes épinglées (centerpiece), notes inline et notes annexes.
+ * Toujours en serif italic. Le marqueur amber est rare : il
+ * indique qu'une note compte particulièrement pour l'utilisateur.
+ * ============================================================ */
+
+/* ============ Note épinglée (centerpiece) ============ */
+.v-pinned {
+  background: var(--color-amber-tint);
+  border: 1px solid oklch(89% 0.025 80);
+  border-left: 2px solid var(--color-amber);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: var(--sp-5) var(--sp-6) var(--sp-5);
+  position: relative;
+}
+
+.v-pinned__mark {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-amber);
+  margin-bottom: var(--sp-3);
+  font-weight: var(--weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.v-pinned__mark::before {
+  content: "";
+  width: 14px;
+  height: 1px;
+  background: var(--color-amber);
+}
+
+.v-pinned__body {
+  font-family: var(--font-serif);
+  font-size: var(--type-lead);
+  font-style: italic;
+  line-height: var(--lh-normal);
+  color: var(--color-ink);
+  font-weight: var(--weight-regular);
+  margin: 0;
+  text-wrap: pretty;
+}
+.v-pinned__body b {
+  font-style: normal;
+  font-weight: var(--weight-medium);
+}
+
+.v-pinned__foot {
+  margin-top: var(--sp-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--type-meta);
+  color: var(--color-ink-4);
+  letter-spacing: var(--ls-meta);
+}
+.v-pinned__foot .actions { margin-left: auto; display: flex; gap: var(--sp-2); }
+
+/* ============ Note rail (mini-pin in left rail) ============ */
+.v-rail-pin {
+  padding: var(--sp-4);
+  background: var(--color-amber-tint);
+  border-left: 2px solid var(--color-amber);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+.v-rail-pin .mark {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-amber);
+  font-weight: var(--weight-medium);
+  margin-bottom: var(--sp-2);
+}
+.v-rail-pin p {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-caption);
+  line-height: var(--lh-normal);
+  color: var(--color-ink);
+  margin: 0;
+}
+.v-rail-pin .on {
+  margin-top: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--type-meta);
+  color: var(--color-ink-4);
+  letter-spacing: var(--ls-meta);
+  display: block;
+}
+
+/* ============ Note inline (citation dans le stream) ============ */
+.v-note-inline {
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  font-style: italic;
+  line-height: var(--lh-normal);
+  color: var(--color-ink);
+  text-wrap: pretty;
+  margin: 0;
+}
+.v-note-inline::before { content: "“"; color: var(--color-ink-4); margin-right: 4px; }
+.v-note-inline::after  { content: "”"; color: var(--color-ink-4); margin-left: 2px; }
+
+/* ============ Annotation marginale (votre angle, votre note) ============ */
+.v-annotation {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-body-sm);
+  line-height: var(--lh-normal);
+  color: var(--color-ink-2);
+  padding: var(--sp-2) 0 0 var(--sp-4);
+  border-left: 1px solid var(--color-rule);
+  text-wrap: pretty;
+  margin-top: var(--sp-2);
+}
+.v-annotation__label {
+  font-family: var(--font-mono);
+  font-style: normal;
+  font-size: var(--type-eyebrow-sm);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-4);
+  font-weight: var(--weight-medium);
+  margin-right: var(--sp-2);
+}
+
+/* ============ Whisper (système, en marge) ============ */
+.v-whisper {
+  margin-top: var(--sp-10);
+  padding: var(--sp-5) var(--sp-6);
+  background: var(--color-bg-2);
+  border: 1px dashed var(--color-rule);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+}
+.v-whisper__mark {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-ink-4);
+  font-weight: var(--weight-medium);
+  flex: none;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  padding-top: 3px;
+}
+.v-whisper__body {
+  flex: 1;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-caption);
+  line-height: var(--lh-normal);
+  color: var(--color-ink-3);
+  text-wrap: pretty;
+}
+.v-whisper__body a {
+  color: var(--color-indigo);
+  font-style: normal;
+  text-decoration: underline;
+  text-decoration-color: oklch(38% 0.09 265 / 0.35);
+  text-underline-offset: 3px;
+  font-weight: var(--weight-medium);
+}
