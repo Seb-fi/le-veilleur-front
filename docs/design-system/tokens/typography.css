@@ -1,0 +1,70 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * tokens/typography.css
+ *
+ * Trois familles, et c'est tout :
+ *  - Newsreader (serif)  → lecture, titres, citations
+ *  - IBM Plex Sans       → boutons, contrôles, descriptions
+ *  - IBM Plex Mono       → eyebrows, meta, dates, labels système
+ *
+ * Toute autre famille est interdite. Italique = sens (réflexion,
+ * citation, contexte) ; jamais décoratif.
+ * ============================================================ */
+
+/* Charger via index.html :
+ * <link rel="preconnect" href="https://fonts.googleapis.com">
+ * <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ * <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+ */
+
+:root {
+  /* ------------------------------------------------------------
+   * Families
+   * ------------------------------------------------------------ */
+  --font-serif: "Newsreader", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-sans:  "IBM Plex Sans", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono:  "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  /* ------------------------------------------------------------
+   * Scale — éditorial, peu de tailles
+   * ------------------------------------------------------------ */
+  --type-display:   46px;  /* titre de page                  */
+  --type-h1:        38px;  /* titre de piste                 */
+  --type-h2:        22px;  /* sous-titres                    */
+  --type-h3:        18px;  /* article, signal                */
+  --type-lead:      18px;  /* citation centrale (italic)     */
+  --type-body:      16px;  /* corps de note                  */
+  --type-body-sm:   14.5px;/* meta, sous-titre               */
+  --type-caption:   13px;  /* annotation                     */
+  --type-meta:      11.5px;/* meta seconde, dates            */
+  --type-eyebrow:   10px;  /* MONO · uppercase               */
+  --type-eyebrow-sm: 9px;  /* labels les plus discrets       */
+
+  /* ------------------------------------------------------------
+   * Line height
+   * ------------------------------------------------------------ */
+  --lh-tight:    1.04;     /* gros titres                    */
+  --lh-snug:     1.2;      /* sous-titres                    */
+  --lh-normal:   1.45;     /* corps                          */
+  --lh-relaxed:  1.6;      /* citations longues              */
+
+  /* ------------------------------------------------------------
+   * Letter spacing — tight pour les serifs, généreux pour mono
+   * ------------------------------------------------------------ */
+  --ls-display:  -0.024em;
+  --ls-h1:       -0.022em;
+  --ls-h2:       -0.014em;
+  --ls-h3:       -0.008em;
+  --ls-body:     -0.005em;
+  --ls-meta:      0.04em;
+  --ls-eyebrow:   0.22em;  /* MONO · UPPERCASE               */
+  --ls-button:    0.14em;  /* MONO · UPPERCASE petite        */
+
+  /* ------------------------------------------------------------
+   * Weight
+   * ------------------------------------------------------------ */
+  --weight-light:    300;
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+}

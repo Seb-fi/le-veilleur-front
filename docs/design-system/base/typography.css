@@ -1,0 +1,121 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * base/typography.css
+ *
+ * Classes utilitaires typographiques. Toutes optionnelles —
+ * vous pouvez composer directement avec les variables.
+ *
+ * Convention :
+ *   .t-display, .t-h1, .t-h2 …    → titres (serif)
+ *   .t-lead, .t-body, .t-caption  → corps (serif/sans)
+ *   .t-eyebrow, .t-meta           → labels (mono)
+ *   .t-quote                      → citation (serif italic)
+ * ============================================================ */
+
+.t-display {
+  font-family: var(--font-serif);
+  font-size: var(--type-display);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--ls-display);
+  line-height: var(--lh-tight);
+  text-wrap: pretty;
+}
+.t-display em {
+  font-style: italic;
+  color: var(--color-indigo);
+  font-weight: var(--weight-regular);
+}
+
+.t-h1 {
+  font-family: var(--font-serif);
+  font-size: var(--type-h1);
+  font-weight: var(--weight-regular);
+  letter-spacing: var(--ls-h1);
+  line-height: var(--lh-tight);
+  text-wrap: pretty;
+}
+.t-h1 em {
+  font-style: italic;
+  color: var(--color-indigo);
+  font-weight: var(--weight-regular);
+}
+
+.t-h2 {
+  font-family: var(--font-serif);
+  font-size: var(--type-h2);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--ls-h2);
+  line-height: var(--lh-snug);
+}
+
+.t-h3 {
+  font-family: var(--font-serif);
+  font-size: var(--type-h3);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--ls-h3);
+  line-height: var(--lh-snug);
+}
+
+.t-lead {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-lead);
+  font-weight: var(--weight-light);
+  line-height: var(--lh-normal);
+  color: var(--color-ink-3);
+  text-wrap: pretty;
+}
+
+.t-body {
+  font-family: var(--font-serif);
+  font-size: var(--type-body);
+  font-weight: var(--weight-regular);
+  line-height: var(--lh-normal);
+  text-wrap: pretty;
+}
+
+.t-caption {
+  font-family: var(--font-serif);
+  font-size: var(--type-caption);
+  font-style: italic;
+  line-height: var(--lh-normal);
+  color: var(--color-ink-3);
+}
+
+/* ----- Mono labels — toujours uppercase ----- */
+.t-eyebrow,
+.t-meta {
+  font-family: var(--font-mono);
+  font-weight: var(--weight-medium);
+  text-transform: uppercase;
+}
+
+.t-eyebrow {
+  font-size: var(--type-eyebrow);
+  letter-spacing: var(--ls-eyebrow);
+  color: var(--color-ink-3);
+}
+.t-eyebrow--xs {
+  font-size: var(--type-eyebrow-sm);
+  letter-spacing: var(--ls-eyebrow);
+  color: var(--color-ink-4);
+}
+
+.t-meta {
+  font-size: var(--type-meta);
+  letter-spacing: var(--ls-meta);
+  text-transform: none;     /* meta = pas uppercase */
+  color: var(--color-ink-4);
+}
+
+/* ----- Citation (réflexion personnelle) ----- */
+.t-quote {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-body);
+  line-height: var(--lh-relaxed);
+  color: var(--color-ink);
+  text-wrap: pretty;
+}
+.t-quote::before { content: "“"; color: var(--color-ink-4); margin-right: 4px; }
+.t-quote::after  { content: "”"; color: var(--color-ink-4); margin-left: 2px; }

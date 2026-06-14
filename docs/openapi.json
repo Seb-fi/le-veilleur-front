@@ -1,0 +1,1973 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LeVeilleur API",
+    "version": "0.1.0"
+  },
+  "paths": {
+    "/api/admin/ingestion": {
+      "get": {
+        "summary": "Get Ingestion Status",
+        "operationId": "get_ingestion_status_api_admin_ingestion_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Ingestion Status Api Admin Ingestion Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/observability": {
+      "get": {
+        "summary": "Get Observability",
+        "description": "Métriques de garde-fou Phase 2b (dispersion, stabilité inter-runs A4,\ncouverture des axes).",
+        "operationId": "get_observability_api_admin_observability_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Observability Api Admin Observability Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/pipeline": {
+      "get": {
+        "summary": "Get Pipeline Status",
+        "operationId": "get_pipeline_status_api_admin_pipeline_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Pipeline Status Api Admin Pipeline Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/clustering": {
+      "get": {
+        "summary": "Get Clustering Status",
+        "operationId": "get_clustering_status_api_admin_clustering_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Get Clustering Status Api Admin Clustering Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles": {
+      "get": {
+        "summary": "List Articles",
+        "operationId": "list_articles_api_articles_get",
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "today",
+                "week",
+                "all"
+              ],
+              "type": "string",
+              "default": "all",
+              "title": "Filter"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "enum": [
+                "score",
+                "date",
+                "source"
+              ],
+              "type": "string",
+              "default": "score",
+              "title": "Sort"
+            }
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "",
+              "title": "Q"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ArticleOut"
+                  },
+                  "title": "Response List Articles Api Articles Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{article_id}/related": {
+      "get": {
+        "summary": "Get Article Related",
+        "operationId": "get_article_related_api_articles__article_id__related_get",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Article Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "title": "Response Get Article Related Api Articles  Article Id  Related Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{article_id}/clusters": {
+      "get": {
+        "summary": "Get Article Cluster Memberships",
+        "operationId": "get_article_cluster_memberships_api_articles__article_id__clusters_get",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Article Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClusterMembershipOut"
+                  },
+                  "title": "Response Get Article Cluster Memberships Api Articles  Article Id  Clusters Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{article_id}/score-detail": {
+      "get": {
+        "summary": "Get Article Score Detail",
+        "description": "Retourne le score_detail complet depuis article_scoring_history (dernier run).",
+        "operationId": "get_article_score_detail_api_articles__article_id__score_detail_get",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Article Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Article Score Detail Api Articles  Article Id  Score Detail Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{article_id}": {
+      "get": {
+        "summary": "Get Article",
+        "operationId": "get_article_api_articles__article_id__get",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Article Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ArticleOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings": {
+      "get": {
+        "summary": "List Briefings",
+        "operationId": "list_briefings_api_briefings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/BriefingOut"
+                  },
+                  "type": "array",
+                  "title": "Response List Briefings Api Briefings Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/today": {
+      "get": {
+        "summary": "Today Briefing",
+        "operationId": "today_briefing_api_briefings_today_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BriefingOut"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/generate": {
+      "post": {
+        "summary": "Generate Briefing",
+        "operationId": "generate_briefing_api_briefings_generate_post",
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Generate Briefing Api Briefings Generate Post"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/generate/status": {
+      "get": {
+        "summary": "Generation Status",
+        "operationId": "generation_status_api_briefings_generate_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Generation Status Api Briefings Generate Status Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dev/evaluator-notes": {
+      "post": {
+        "tags": [
+          "dev"
+        ],
+        "summary": "Create Evaluator Note",
+        "operationId": "create_evaluator_note_api_dev_evaluator_notes_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EvaluatorNoteIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Create Evaluator Note Api Dev Evaluator Notes Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "dev"
+        ],
+        "summary": "List Evaluator Notes",
+        "operationId": "list_evaluator_notes_api_dev_evaluator_notes_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "title": "Response List Evaluator Notes Api Dev Evaluator Notes Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/dev/bug-captures": {
+      "post": {
+        "tags": [
+          "dev"
+        ],
+        "summary": "Create Bug Capture",
+        "operationId": "create_bug_capture_api_dev_bug_captures_post",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BugCaptureIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Create Bug Capture Api Dev Bug Captures Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "dev"
+        ],
+        "summary": "List Bug Captures",
+        "operationId": "list_bug_captures_api_dev_bug_captures_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  },
+                  "title": "Response List Bug Captures Api Dev Bug Captures Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/articles/{article_id}/feedback": {
+      "post": {
+        "summary": "Post Feedback",
+        "operationId": "post_feedback_api_articles__article_id__feedback_post",
+        "parameters": [
+          {
+            "name": "article_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Article Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FeedbackIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Post Feedback Api Articles  Article Id  Feedback Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/{briefing_date}/listen": {
+      "post": {
+        "summary": "Post Listen",
+        "operationId": "post_listen_api_briefings__briefing_date__listen_post",
+        "parameters": [
+          {
+            "name": "briefing_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Briefing Date"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ListenIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Post Listen Api Briefings  Briefing Date  Listen Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/{briefing_date}/feedback": {
+      "post": {
+        "summary": "Post Briefing Feedback",
+        "description": "PRD amélioration briefing Lot 0 (C4). Feedback briefing global.\nRésolution run_id interne (convention {briefing_date}). Upsert mergé.",
+        "operationId": "post_briefing_feedback_api_briefings__briefing_date__feedback_post",
+        "parameters": [
+          {
+            "name": "briefing_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Briefing Date"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BriefingFeedbackIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Post Briefing Feedback Api Briefings  Briefing Date  Feedback Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Get Briefing Feedback",
+        "description": "Réhydratation (#3) : {article_id: feedback_type} pour les boutons UI\ndu briefing. Batch anti N+1. run_id résolu (NULL → fallback global).",
+        "operationId": "get_briefing_feedback_api_briefings__briefing_date__feedback_get",
+        "parameters": [
+          {
+            "name": "briefing_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Briefing Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Briefing Feedback Api Briefings  Briefing Date  Feedback Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/{briefing_date}/briefing-feedback": {
+      "get": {
+        "summary": "Get Briefing Level Feedback",
+        "description": "Réhydratation du feedback briefing GLOBAL pour le run courant (PRD Lot 0).\nCorrige la fraîcheur sur régénération même-jour : le widget doit refléter\nl'état persisté du run actuel, pas un état local périmé. {} si aucun.",
+        "operationId": "get_briefing_level_feedback_api_briefings__briefing_date__briefing_feedback_get",
+        "parameters": [
+          {
+            "name": "briefing_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Briefing Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Briefing Level Feedback Api Briefings  Briefing Date  Briefing Feedback Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/{briefing_date}/shadow": {
+      "get": {
+        "summary": "Get Briefing Shadow",
+        "description": "PRD Lot 1 (C14) : scripts A (shadow) et B (diffusé) pour comparaison appariée.",
+        "operationId": "get_briefing_shadow_api_briefings__briefing_date__shadow_get",
+        "parameters": [
+          {
+            "name": "briefing_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Briefing Date"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Get Briefing Shadow Api Briefings  Briefing Date  Shadow Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/briefings/{briefing_date}/shadow-verdict": {
+      "post": {
+        "summary": "Post Shadow Verdict",
+        "description": "PRD Lot 1 (C14) : capture du verdict apparié quotidien (instrument du gate D8).",
+        "operationId": "post_shadow_verdict_api_briefings__briefing_date__shadow_verdict_post",
+        "parameters": [
+          {
+            "name": "briefing_date",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Briefing Date"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShadowVerdictIn"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true,
+                  "title": "Response Post Shadow Verdict Api Briefings  Briefing Date  Shadow Verdict Post"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/pipeline-status": {
+      "get": {
+        "summary": "Get Pipeline Status",
+        "operationId": "get_pipeline_status_api_pipeline_status_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PipelineRunOut"
+                  },
+                  "type": "array",
+                  "title": "Response Get Pipeline Status Api Pipeline Status Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings": {
+      "get": {
+        "summary": "Get Settings",
+        "operationId": "get_settings_api_settings_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsOut"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Patch Settings",
+        "operationId": "patch_settings_api_settings_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SettingsPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SettingsOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/settings/download": {
+      "get": {
+        "summary": "Download Settings",
+        "operationId": "download_settings_api_settings_download_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/topics": {
+      "get": {
+        "summary": "List Topics",
+        "operationId": "list_topics_api_topics_get",
+        "parameters": [
+          {
+            "name": "trending",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Trending"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 20,
+              "title": "Limit"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TopicOut"
+                  },
+                  "title": "Response List Topics Api Topics Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/topics/{cluster_id}": {
+      "get": {
+        "summary": "Get Topic",
+        "operationId": "get_topic_api_topics__cluster_id__get",
+        "parameters": [
+          {
+            "name": "cluster_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Cluster Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TopicOut"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/topics/{cluster_id}/history": {
+      "get": {
+        "summary": "Get Topic History",
+        "operationId": "get_topic_history_api_topics__cluster_id__history_get",
+        "parameters": [
+          {
+            "name": "cluster_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Cluster Id"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "default": 30,
+              "title": "Days"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ClusterHistoryOut"
+                  },
+                  "title": "Response Get Topic History Api Topics  Cluster Id  History Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "additionalProperties": true,
+                  "type": "object",
+                  "title": "Response Health Api Health Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ArticleOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "labels": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Labels"
+          },
+          "context": {
+            "type": "string",
+            "title": "Context"
+          },
+          "content_type": {
+            "type": "string",
+            "title": "Content Type"
+          },
+          "source": {
+            "type": "string",
+            "title": "Source"
+          },
+          "published": {
+            "type": "string",
+            "title": "Published"
+          },
+          "score": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score"
+          },
+          "score_detail": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Score Detail"
+          },
+          "trending": {
+            "type": "boolean",
+            "title": "Trending"
+          },
+          "related_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Related Ids"
+          },
+          "thesis_fr": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Thesis Fr"
+          },
+          "is_argumentative": {
+            "type": "boolean",
+            "title": "Is Argumentative",
+            "default": false
+          },
+          "contradiction_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Contradiction Ids",
+            "default": []
+          },
+          "contradiction_scores": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Contradiction Scores",
+            "default": {}
+          },
+          "link": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Link"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "summary",
+          "labels",
+          "context",
+          "content_type",
+          "source",
+          "published",
+          "score",
+          "trending",
+          "related_ids"
+        ],
+        "title": "ArticleOut"
+      },
+      "BriefingFeedbackIn": {
+        "properties": {
+          "valence": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "utile",
+                  "pas_utile"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Valence"
+          },
+          "defect_tags": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "trop_long",
+                    "trop_court",
+                    "manque_densite",
+                    "trop_plat"
+                  ]
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Defect Tags"
+          },
+          "note_retenu": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note Retenu"
+          },
+          "note_interet": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note Interet"
+          },
+          "note_inutile": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note Inutile"
+          }
+        },
+        "type": "object",
+        "title": "BriefingFeedbackIn"
+      },
+      "BriefingOut": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "date_label": {
+            "type": "string",
+            "title": "Date Label"
+          },
+          "article_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Article Ids"
+          },
+          "article_count": {
+            "type": "integer",
+            "title": "Article Count"
+          },
+          "has_audio": {
+            "type": "boolean",
+            "title": "Has Audio"
+          },
+          "audio_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Audio Url"
+          },
+          "briefing_run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Briefing Run Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "date",
+          "date_label",
+          "article_ids",
+          "article_count",
+          "has_audio",
+          "audio_url"
+        ],
+        "title": "BriefingOut"
+      },
+      "BugCaptureIn": {
+        "properties": {
+          "url": {
+            "type": "string",
+            "title": "Url"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "article_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Article Id"
+          },
+          "context_json": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Context Json"
+          }
+        },
+        "type": "object",
+        "required": [
+          "url",
+          "description"
+        ],
+        "title": "BugCaptureIn"
+      },
+      "ClusterHistoryOut": {
+        "properties": {
+          "date": {
+            "type": "string",
+            "title": "Date"
+          },
+          "article_count": {
+            "type": "integer",
+            "title": "Article Count"
+          },
+          "source_count": {
+            "type": "integer",
+            "title": "Source Count"
+          },
+          "trend_score": {
+            "type": "number",
+            "title": "Trend Score"
+          }
+        },
+        "type": "object",
+        "required": [
+          "date",
+          "article_count",
+          "source_count",
+          "trend_score"
+        ],
+        "title": "ClusterHistoryOut"
+      },
+      "ClusterMembershipOut": {
+        "properties": {
+          "cluster_id": {
+            "type": "integer",
+            "title": "Cluster Id"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "max_similarity": {
+            "type": "number",
+            "title": "Max Similarity"
+          },
+          "chunk_count_in_cluster": {
+            "type": "integer",
+            "title": "Chunk Count In Cluster"
+          }
+        },
+        "type": "object",
+        "required": [
+          "cluster_id",
+          "max_similarity",
+          "chunk_count_in_cluster"
+        ],
+        "title": "ClusterMembershipOut"
+      },
+      "EvaluatorNoteIn": {
+        "properties": {
+          "note_type": {
+            "type": "string",
+            "enum": [
+              "sous-évalué",
+              "sur-évalué",
+              "mauvais_cluster",
+              "article_manquant",
+              "autre"
+            ],
+            "title": "Note Type"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "article_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Article Id"
+          },
+          "cluster_id": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cluster Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "note_type",
+          "content"
+        ],
+        "title": "EvaluatorNoteIn"
+      },
+      "FeedbackIn": {
+        "properties": {
+          "briefing_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Briefing Date"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "relevant",
+              "not_relevant",
+              "favorite",
+              "skipped",
+              "source_clicked",
+              "related_clicked"
+            ],
+            "title": "Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "title": "FeedbackIn"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "ListenIn": {
+        "properties": {
+          "percent": {
+            "type": "number",
+            "title": "Percent"
+          }
+        },
+        "type": "object",
+        "required": [
+          "percent"
+        ],
+        "title": "ListenIn"
+      },
+      "PipelineRunOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "started_at": {
+            "type": "string",
+            "title": "Started At"
+          },
+          "finished_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Finished At"
+          },
+          "batch_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Batch Name"
+          },
+          "feeds_total": {
+            "type": "integer",
+            "title": "Feeds Total"
+          },
+          "feeds_ok": {
+            "type": "integer",
+            "title": "Feeds Ok"
+          },
+          "feeds_error": {
+            "type": "integer",
+            "title": "Feeds Error"
+          },
+          "articles_new": {
+            "type": "integer",
+            "title": "Articles New"
+          },
+          "articles_skipped": {
+            "type": "integer",
+            "title": "Articles Skipped"
+          },
+          "embeds_new": {
+            "type": "integer",
+            "title": "Embeds New"
+          },
+          "duration_ms": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Duration Ms"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "started_at",
+          "finished_at",
+          "batch_name",
+          "feeds_total",
+          "feeds_ok",
+          "feeds_error",
+          "articles_new",
+          "articles_skipped",
+          "embeds_new",
+          "duration_ms"
+        ],
+        "title": "PipelineRunOut"
+      },
+      "SettingsOut": {
+        "properties": {
+          "voice": {
+            "type": "string",
+            "title": "Voice"
+          },
+          "max_articles": {
+            "type": "integer",
+            "title": "Max Articles"
+          },
+          "schedule_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schedule Time"
+          },
+          "dev_mode": {
+            "type": "boolean",
+            "title": "Dev Mode",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "voice",
+          "max_articles",
+          "schedule_time"
+        ],
+        "title": "SettingsOut"
+      },
+      "SettingsPatch": {
+        "properties": {
+          "voice": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Voice"
+          },
+          "max_articles": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Max Articles"
+          },
+          "schedule_time": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Schedule Time"
+          }
+        },
+        "type": "object",
+        "title": "SettingsPatch"
+      },
+      "ShadowVerdictIn": {
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "b_better",
+              "a_better",
+              "equal"
+            ],
+            "title": "Verdict"
+          }
+        },
+        "type": "object",
+        "required": [
+          "verdict"
+        ],
+        "title": "ShadowVerdictIn"
+      },
+      "TopicOut": {
+        "properties": {
+          "id": {
+            "type": "integer",
+            "title": "Id"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "summary": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Summary"
+          },
+          "article_count": {
+            "type": "integer",
+            "title": "Article Count"
+          },
+          "chunk_count": {
+            "type": "integer",
+            "title": "Chunk Count"
+          },
+          "trend_score": {
+            "type": "number",
+            "title": "Trend Score"
+          },
+          "is_emerging": {
+            "type": "boolean",
+            "title": "Is Emerging"
+          },
+          "label_ready": {
+            "type": "boolean",
+            "title": "Label Ready"
+          },
+          "first_seen": {
+            "type": "string",
+            "title": "First Seen"
+          },
+          "last_seen": {
+            "type": "string",
+            "title": "Last Seen"
+          },
+          "top_entities": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Top Entities"
+          },
+          "member_article_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Member Article Ids"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "article_count",
+          "chunk_count",
+          "trend_score",
+          "is_emerging",
+          "label_ready",
+          "first_seen",
+          "last_seen"
+        ],
+        "title": "TopicOut"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

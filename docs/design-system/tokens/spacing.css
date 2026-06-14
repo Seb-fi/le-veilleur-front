@@ -1,0 +1,65 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * tokens/spacing.css
+ *
+ * Échelle dense mais respirable. Échelle de 4px, mais on saute
+ * souvent par 8 ou 12. Pas de rythme parfait — c'est un carnet.
+ * ============================================================ */
+
+:root {
+  /* ------------------------------------------------------------
+   * Spacing scale
+   * ------------------------------------------------------------ */
+  --sp-1:    4px;
+  --sp-2:    8px;
+  --sp-3:   12px;
+  --sp-4:   16px;
+  --sp-5:   20px;
+  --sp-6:   24px;
+  --sp-8:   32px;
+  --sp-10:  40px;
+  --sp-12:  48px;
+  --sp-16:  64px;
+  --sp-20:  80px;
+  --sp-24:  96px;
+
+  /* ------------------------------------------------------------
+   * Radius — discrets
+   * ------------------------------------------------------------ */
+  --radius-sm:   3px;   /* tags, petits boutons, pills        */
+  --radius-md:   4px;   /* cards, modals                      */
+  --radius-lg:   6px;   /* modals importants                  */
+  --radius-pill: 999px; /* mode toggle                        */
+
+  /* ------------------------------------------------------------
+   * Borders — toujours fines
+   * ------------------------------------------------------------ */
+  --border-hair:   0.5px solid var(--color-rule-3);
+  --border-thin:   1px solid var(--color-rule-2);
+  --border-rule:   1px solid var(--color-rule);
+  --border-strong: 1px solid var(--color-ink-4);
+
+  /* ------------------------------------------------------------
+   * Elevation — toujours minime, jamais "popping"
+   * Ombres calques pour profondeur subtile.
+   * ------------------------------------------------------------ */
+  --shadow-rest:   none;
+  --shadow-hover:  0 1px 2px oklch(0% 0 0 / 0.05);
+  --shadow-popover:
+    0 8px 24px oklch(0% 0 0 / 0.12),
+    0 2px 6px oklch(0% 0 0 / 0.06);
+  --shadow-modal:
+    0 24px 64px oklch(0% 0 0 / 0.28),
+    0 4px 12px oklch(0% 0 0 / 0.1);
+  --shadow-drag:
+    0 8px 24px oklch(0% 0 0 / 0.18);
+
+  /* ------------------------------------------------------------
+   * Layout — gabarits éditoriaux
+   * ------------------------------------------------------------ */
+  --layout-content-max:    1280px;  /* shell mémoire           */
+  --layout-piste-max:       760px;  /* colonne de lecture      */
+  --layout-rail-width:      236px;  /* left rail               */
+  --layout-page-padding:     40px;  /* gouttière externe       */
+  --layout-section-gap:      72px;  /* entre rail et colonne   */
+}

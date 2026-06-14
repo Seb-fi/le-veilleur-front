@@ -1,0 +1,60 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * tokens/colors.css
+ *
+ * Palette éditoriale, ton crème · contrastes doux · accents rares.
+ * Tous les tokens sont en oklch pour des dégradés perceptuellement
+ * réguliers. Ne pas inventer de couleurs en dehors de cette palette.
+ * ============================================================ */
+
+:root {
+  /* ------------------------------------------------------------
+   * Surfaces — papier, crème, micro-contrastes
+   * ------------------------------------------------------------ */
+  --color-paper:        oklch(99% 0.005 85);   /* canvas, cards en avant   */
+  --color-bg:           oklch(97% 0.008 85);   /* fond global, "papier"    */
+  --color-bg-2:         oklch(95% 0.012 80);   /* hover, sub-surfaces      */
+  --color-bg-3:         oklch(93% 0.015 78);   /* zones inactives, ombres  */
+
+  /* ------------------------------------------------------------
+   * Encre — hiérarchie typographique
+   * ------------------------------------------------------------ */
+  --color-ink:          oklch(20% 0.012 250);  /* texte principal          */
+  --color-ink-2:        oklch(35% 0.010 260);  /* texte secondaire         */
+  --color-ink-3:        oklch(55% 0.008 270);  /* meta, labels             */
+  --color-ink-4:        oklch(72% 0.006 270);  /* murmures, dividers forts */
+
+  /* ------------------------------------------------------------
+   * Rules — séparateurs
+   * ------------------------------------------------------------ */
+  --color-rule:         oklch(88% 0.010 80);
+  --color-rule-2:       oklch(92% 0.008 80);
+  --color-rule-3:       oklch(94% 0.006 80);
+
+  /* ------------------------------------------------------------
+   * Accents — usage rare, intentionnel
+   * ------------------------------------------------------------ */
+  --color-indigo:       oklch(38% 0.090 265); /* accent principal · vous */
+  --color-indigo-2:     oklch(48% 0.090 285); /* hover indigo            */
+  --color-indigo-tint:  oklch(94% 0.025 265); /* fond indigo très clair  */
+
+  --color-amber:        oklch(64% 0.150 65);  /* pin / évènement         */
+  --color-amber-tint:   oklch(96% 0.025 80);  /* fond pin léger          */
+
+  --color-moss:         oklch(52% 0.075 155); /* succès / convergence    */
+  --color-moss-tint:    oklch(94% 0.025 155);
+
+  --color-rose:         oklch(56% 0.110 25);  /* warning / tension       */
+  --color-rose-tint:    oklch(95% 0.030 25);
+
+  /* ------------------------------------------------------------
+   * Sémantique de domaine — réservé "Mémoire active"
+   * Mappe les accents sur des rôles métier.
+   * ------------------------------------------------------------ */
+  --color-piste-self:    var(--color-indigo);   /* piste créée par vous     */
+  --color-piste-system:  var(--color-ink-4);    /* piste détectée système   */
+  --color-event:         var(--color-amber);    /* évènements externes      */
+  --color-note-mark:     var(--color-amber);    /* note épinglée            */
+  --color-emerging:      var(--color-moss);     /* signal émergent          */
+  --color-tension:       var(--color-rose);     /* tension active           */
+}

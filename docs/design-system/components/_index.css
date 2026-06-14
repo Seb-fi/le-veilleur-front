@@ -1,0 +1,18 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * components/_index.css
+ *
+ * Master des composants. À importer après les tokens et la base :
+ *
+ *   import "@veilleur/design-system/tokens";
+ *   import "@veilleur/design-system/base";
+ *   import "@veilleur/design-system/components";
+ * ============================================================ */
+
+@import "./button.css";
+@import "./badge.css";
+@import "./note.css";
+@import "./popover.css";
+@import "./modal.css";
+@import "./piste.css";
+@import "./graph.css";

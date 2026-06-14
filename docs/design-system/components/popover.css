@@ -1,0 +1,200 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * components/popover.css
+ *
+ * Popover contextuel : créer une note, éditer, ajouter article.
+ * Toujours déclenché par un clic utilisateur, jamais par hover seul.
+ * Sortie au clic extérieur ou Esc.
+ *
+ * Le positionnement est géré côté JS (usePopover composable).
+ * Ici on définit uniquement l'apparence + les états.
+ * ============================================================ */
+
+.v-popover {
+  position: absolute;
+  background: var(--color-paper);
+  border: var(--border-rule);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-popover);
+  padding: var(--sp-1);
+  z-index: 10;
+  min-width: 180px;
+  display: flex;
+  flex-direction: column;
+
+  /* default state — caché, attend l'activation par JS */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-3px);
+  transition: var(--tr-pop);
+  pointer-events: none;
+}
+.v-popover[data-open="true"],
+.v-popover.is-open {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+  pointer-events: auto;
+}
+
+/* ============ Variant : picker (large, avec liste) ============ */
+.v-popover--picker {
+  min-width: 320px;
+  max-width: 380px;
+  width: 340px;
+}
+
+/* ============ Sections ============ */
+.v-popover__head {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  letter-spacing: var(--ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--color-ink-4);
+  padding: var(--sp-2) var(--sp-3) 6px;
+  font-weight: var(--weight-medium);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  border-bottom: var(--border-thin);
+  margin-bottom: 3px;
+}
+.v-popover__head .ctx {
+  flex: 1;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: var(--type-meta);
+  font-weight: var(--weight-regular);
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-ink-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v-popover__foot {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  color: var(--color-ink-4);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 6px var(--sp-3) var(--sp-2);
+  border-top: 1px dashed var(--color-rule-2);
+  margin-top: 3px;
+  font-weight: var(--weight-medium);
+}
+.v-popover__foot kbd {
+  font-family: var(--font-mono);
+  background: var(--color-bg-2);
+  border: var(--border-thin);
+  border-radius: 2px;
+  padding: 1px 5px;
+  letter-spacing: 0;
+  font-size: var(--type-eyebrow-sm);
+  color: var(--color-ink-3);
+  margin: 0 3px;
+}
+
+/* ============ Items (action rows) ============ */
+.v-popover__item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--type-meta);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.06em;
+  color: var(--color-ink-2);
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  width: 100%;
+}
+.v-popover__item:hover { background: var(--color-bg-2); color: var(--color-ink); }
+.v-popover__item--primary { color: var(--color-indigo); }
+.v-popover__item--primary:hover { background: var(--color-indigo-tint); }
+.v-popover__item--pinned  { color: var(--color-amber); }
+.v-popover__item__icon { width: 13px; height: 13px; flex: none; color: currentColor; }
+
+/* ============ Inline input (création) ============ */
+.v-popover__input-row {
+  padding: 6px var(--sp-2) var(--sp-2);
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.v-popover__input-row input {
+  flex: 1;
+  background: var(--color-bg);
+  border: var(--border-rule);
+  border-radius: var(--radius-sm);
+  padding: 7px 10px;
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  outline: none;
+  color: var(--color-ink);
+  min-width: 0;
+}
+.v-popover__input-row input:focus { border-color: var(--color-ink-3); }
+
+/* ============ Picker list ============ */
+.v-popover__search {
+  padding: var(--sp-2);
+  border-bottom: var(--border-thin);
+}
+.v-popover__search input {
+  width: 100%;
+  background: var(--color-bg);
+  border: var(--border-rule);
+  border-radius: var(--radius-sm);
+  padding: var(--sp-2) var(--sp-3);
+  font-family: var(--font-sans);
+  font-size: var(--type-caption);
+  outline: none;
+  color: var(--color-ink);
+}
+.v-popover__list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding: var(--sp-1) 0;
+}
+.v-popover__list-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 9px var(--sp-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: var(--font-sans);
+  text-align: left;
+  background: transparent;
+  border: 0;
+  width: 100%;
+}
+.v-popover__list-item:hover { background: var(--color-bg-2); }
+.v-popover__list-item__title {
+  font-family: var(--font-serif);
+  font-size: var(--type-body-sm);
+  font-weight: var(--weight-medium);
+  color: var(--color-ink);
+  line-height: var(--lh-snug);
+  text-wrap: pretty;
+}
+.v-popover__list-item__meta {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow-sm);
+  color: var(--color-ink-4);
+  letter-spacing: var(--ls-meta);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.v-popover__list-item--disabled,
+.v-popover__list-item[disabled] {
+  opacity: 0.42;
+  cursor: not-allowed;
+}

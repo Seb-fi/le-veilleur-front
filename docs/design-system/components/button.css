@@ -1,0 +1,87 @@
+/* ============================================================
+ * Le Veilleur — Design System
+ * components/button.css
+ *
+ * Trois familles :
+ *   .v-btn          — bouton mono uppercase (action)
+ *   .v-btn-ghost    — texte mono discret (lien)
+ *   .v-mode-toggle  — segmented control pour modes (Arborescence/Graphe)
+ * ============================================================ */
+
+/* ============ Bouton mono / uppercase ============ */
+.v-btn {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow);
+  font-weight: var(--weight-medium);
+  letter-spacing: var(--ls-button);
+  text-transform: uppercase;
+
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--radius-sm);
+  color: var(--color-ink-2);
+  background: transparent;
+
+  transition: var(--tr-hover);
+  cursor: pointer;
+}
+.v-btn:hover { background: var(--color-bg-2); color: var(--color-ink); }
+
+/* Variants */
+.v-btn--primary {
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+.v-btn--primary:hover { background: var(--color-indigo); color: var(--color-paper); }
+
+.v-btn--indigo {
+  color: var(--color-indigo);
+  background: var(--color-indigo-tint);
+}
+.v-btn--indigo:hover { background: var(--color-paper); }
+
+.v-btn__icon { width: 13px; height: 13px; flex: none; }
+
+/* ============ Lien ghost mono ============ */
+.v-btn-ghost {
+  font-family: var(--font-mono);
+  font-size: var(--type-meta);
+  letter-spacing: var(--ls-meta);
+  color: var(--color-ink-3);
+  cursor: pointer;
+  transition: color var(--motion-quick) var(--ease-out);
+}
+.v-btn-ghost:hover { color: var(--color-indigo); }
+
+/* ============ Mode toggle (Arborescence/Graphe) ============ */
+.v-mode-toggle {
+  display: inline-flex;
+  background: var(--color-bg-2);
+  border: var(--border-rule);
+  border-radius: var(--radius-pill);
+  padding: 3px;
+}
+.v-mode-toggle__btn {
+  font-family: var(--font-mono);
+  font-size: var(--type-eyebrow);
+  font-weight: var(--weight-medium);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  color: var(--color-ink-3);
+  background: transparent;
+  cursor: pointer;
+  transition: color var(--motion-quick) var(--ease-out),
+              background var(--motion-quick) var(--ease-out);
+}
+.v-mode-toggle__btn:hover { color: var(--color-ink); }
+.v-mode-toggle__btn--on,
+.v-mode-toggle__btn[aria-selected="true"] {
+  background: var(--color-paper);
+  color: var(--color-ink);
+  box-shadow: var(--shadow-hover);
+}

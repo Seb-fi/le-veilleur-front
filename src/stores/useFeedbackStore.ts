@@ -1,0 +1,75 @@
+import { ref } from 'vue'
+import { defineStore } from 'pinia'
+import {
+  postArticleFeedback,
+  postListen,
+  type ArticleFeedbackType,
+} from '../api/feedback'
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}/
+
+// Feedback = réglage, pas récompense (cf. docs/feedback_design.md). État optimiste,
+// idempotent, sans compteur. Le back modélise des ÉVÉNEMENTS (pas un état togglable) :
+// un dé-toggle efface l'état visuel local sans événement de négation (il n'en existe pas).
+export type Opinion = 'relevant' | 'not_relevant' | null
+
+interface ArticleFb {
+  favorite: boolean
+  opinion: Opinion
+}
+
+export const useFeedbackStore = defineStore('feedback', () => {
+  const state = ref<Record<string, ArticleFb>>({})
+  // Implicites + écoute : on n'émet qu'une fois par (article|date) et par type.
+  const firedImplicit = ref<Set<string>>(new Set())
+  const listenSent = ref<Set<string>>(new Set())
+
+  function get(id: string): ArticleFb {
+    return state.value[id] ?? { favorite: false, opinion: null }
+  }
+
+  function send(id: string, type: ArticleFeedbackType, briefingDate?: string) {
+    if (USE_MOCK) return
+    // Best-effort : le feedback n'est pas critique, on n'interrompt jamais la lecture.
+    postArticleFeedback(id, type, briefingDate).catch(() => {})
+  }
+
+  function toggleFavorite(id: string, briefingDate?: string) {
+    const cur = get(id)
+    const favorite = !cur.favorite
+    state.value[id] = { ...cur, favorite }
+    if (favorite) send(id, 'favorite', briefingDate) // pas d'événement d'« unfavorite »
+  }
+
+  // Tri-état mutuellement exclusif : re-cliquer l'opinion active l'efface (local only).
+  function setOpinion(id: string, opinion: Exclude<Opinion, null>, briefingDate?: string) {
+    const cur = get(id)
+    const next = cur.opinion === opinion ? null : opinion
+    state.value[id] = { ...cur, opinion: next }
+    if (next) send(id, next, briefingDate)
+  }
+
+  function markImplicit(
+    id: string,
+    type: Extract<ArticleFeedbackType, 'source_clicked' | 'related_clicked'>,
+    briefingDate?: string,
+  ) {
+    const key = `${id}:${type}`
+    if (firedImplicit.value.has(key)) return
+    firedImplicit.value.add(key)
+    send(id, type, briefingDate)
+  }
+
+  // Écoute audio : POST /briefings/{date}/listen { percent }. Une fois par édition,
+  // avec le dernier % connu. Garde ISO (le composite mock n'a pas de date ISO).
+  function markListen(date: string, percent: number) {
+    if (USE_MOCK || !ISO_DATE.test(date)) return
+    const pct = Math.round(Math.max(0, Math.min(100, percent)))
+    if (pct <= 0) return
+    listenSent.value.add(date) // dernier % gagne : on autorise un ré-envoi à la hausse
+    postListen(date, pct).catch(() => {})
+  }
+
+  return { get, toggleFavorite, setOpinion, markImplicit, markListen }
+})

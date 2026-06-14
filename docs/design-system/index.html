@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8" />
+<title>Le Veilleur — Design System</title>
+<meta name="viewport" content="width=1280" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Design System CSS — order matters -->
+<style>
+@import "tokens/colors.css";
+@import "tokens/typography.css";
+@import "tokens/spacing.css";
+@import "tokens/motion.css";
+
+@import "base/reset.css";
+@import "base/typography.css";
+@import "base/layout.css";
+
+@import "components/button.css";
+@import "components/badge.css";
+@import "components/note.css";
+@import "components/popover.css";
+@import "components/modal.css";
+@import "components/piste.css";
+@import "components/graph.css";
+</style>
+
+<!-- Catalog-specific styles (NOT part of the DS) -->
+<style>
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    padding: 0;
+  }
+
+  .cat-shell {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 56px 120px;
+  }
+
+  /* Top bar */
+  .cat-topbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: oklch(99% 0.005 85 / 0.92);
+    backdrop-filter: blur(8px);
+    border-bottom: var(--border-rule);
+    margin: 0 -56px;
+    padding: 16px 56px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-3);
+    font-weight: 500;
+  }
+  .cat-topbar b { color: var(--color-ink); font-weight: 500; }
+  .cat-topbar nav { display: flex; gap: 20px; margin-left: auto; }
+  .cat-topbar nav a {
+    color: var(--color-ink-3);
+    cursor: pointer;
+    transition: color var(--motion-quick);
+  }
+  .cat-topbar nav a:hover { color: var(--color-indigo); }
+
+  /* Hero */
+  .cat-hero { padding: 96px 0 64px; border-bottom: var(--border-rule); }
+  .cat-hero .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.24em;
+    text-transform: uppercase; color: var(--color-ink-3);
+    margin-bottom: 22px; font-weight: 500;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cat-hero .eyebrow::after {
+    content: ""; flex: 1; max-width: 200px;
+    height: 1px; background: var(--color-rule-2);
+  }
+  .cat-hero h1 {
+    font-family: var(--font-serif);
+    font-size: 64px; font-weight: 400;
+    letter-spacing: -0.026em; line-height: 1.0;
+    margin: 0 0 24px; text-wrap: pretty; max-width: 18ch;
+  }
+  .cat-hero h1 em { font-style: italic; color: var(--color-indigo); font-weight: 400; }
+  .cat-hero p {
+    font-family: var(--font-serif);
+    font-style: italic; font-size: 18px;
+    line-height: 1.55; color: var(--color-ink-3);
+    max-width: 62ch; text-wrap: pretty;
+  }
+  .cat-hero .meta {
+    margin-top: 32px;
+    display: flex; gap: 36px; flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.05em; color: var(--color-ink-3);
+  }
+  .cat-hero .meta b {
+    color: var(--color-ink); font-weight: 500;
+    font-family: var(--font-serif); font-size: 14px;
+    font-variant-numeric: tabular-nums; margin-right: 6px;
+    vertical-align: -1px;
+  }
+
+  /* Section heads */
+  .cat-section { padding: 80px 0 0; }
+  .cat-section-head {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 32px;
+    align-items: baseline;
+    padding-bottom: 24px;
+    border-bottom: var(--border-rule);
+    margin-bottom: 36px;
+  }
+  .cat-section-head .num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-ink-4);
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .cat-section-head h2 {
+    font-family: var(--font-serif);
+    font-size: 32px; font-weight: 400;
+    letter-spacing: -0.018em; line-height: 1.1;
+    margin: 0; text-wrap: pretty;
+  }
+  .cat-section-head h2 em {
+    font-style: italic; color: var(--color-indigo); font-weight: 400;
+  }
+  .cat-section-head p {
+    font-family: var(--font-serif);
+    font-style: italic; font-size: 15px;
+    color: var(--color-ink-3); line-height: 1.55;
+    margin: 12px 0 0; max-width: 56ch; text-wrap: pretty;
+  }
+
+  /* Sub-block (a token group / a component) */
+  .cat-block {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 32px;
+    padding: 36px 0;
+    border-bottom: var(--border-thin);
+  }
+  .cat-block:last-child { border-bottom: 0; }
+  .cat-block__label {
+    font-family: var(--font-mono);
+    font-size: 10px; letter-spacing: 0.22em;
+    text-transform: uppercase; color: var(--color-ink-4);
+    font-weight: 500;
+    padding-top: 4px;
+  }
+  .cat-block__body { min-width: 0; }
+  .cat-block__title {
+    font-family: var(--font-serif);
+    font-size: 21px; font-weight: 500;
+    letter-spacing: -0.012em; line-height: 1.2;
+    margin: 0 0 8px; color: var(--color-ink); text-wrap: pretty;
+  }
+  .cat-block__title code {
+    font-family: var(--font-mono); font-size: 14px;
+    color: var(--color-indigo); background: var(--color-indigo-tint);
+    padding: 2px 8px; border-radius: 3px;
+    letter-spacing: 0; font-weight: 500;
+    margin-left: 8px; vertical-align: 2px;
+  }
+  .cat-block__desc {
+    font-family: var(--font-serif);
+    font-style: italic; font-size: 14px;
+    color: var(--color-ink-3); line-height: 1.55;
+    margin: 0 0 24px; max-width: 60ch; text-wrap: pretty;
+  }
+
+  /* Demo area */
+  .cat-demo {
+    padding: 28px 32px;
+    background: var(--color-paper);
+    border: var(--border-rule);
+    border-radius: var(--radius-md);
+    position: relative;
+  }
+  .cat-demo--inset { padding: 0; overflow: hidden; }
+  .cat-demo + .cat-demo { margin-top: 12px; }
+
+  .cat-demo--canvas {
+    min-height: 240px;
+    display: flex; flex-direction: column; gap: 16px;
+    align-items: flex-start;
+  }
+
+  /* Code */
+  pre.cat-code {
+    background: oklch(22% 0.012 250);
+    color: oklch(85% 0.012 80);
+    padding: 18px 22px;
+    border-radius: var(--radius-md);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.55;
+    overflow-x: auto;
+    margin: 16px 0 0;
+    letter-spacing: 0;
+  }
+  pre.cat-code .c-key  { color: oklch(80% 0.12 80); }   /* property */
+  pre.cat-code .c-val  { color: oklch(82% 0.08 155); }  /* value */
+  pre.cat-code .c-sel  { color: oklch(75% 0.1 265); }   /* selector */
+  pre.cat-code .c-com  { color: oklch(58% 0.012 270); font-style: italic; }
+  pre.cat-code .c-tag  { color: oklch(75% 0.1 265); }
+  pre.cat-code .c-str  { color: oklch(82% 0.08 80); }
+  pre.cat-code .c-kw   { color: oklch(80% 0.12 25); }
+
+  /* Color grid */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px 22px;
+  }
+  .swatch {
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .swatch__chip {
+    height: 64px;
+    border-radius: var(--radius-sm);
+    border: var(--border-thin);
+  }
+  .swatch__name {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.04em; color: var(--color-ink);
+    font-weight: 500;
+  }
+  .swatch__var {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--color-ink-3);
+  }
+  .swatch__val {
+    font-family: var(--font-mono); font-size: 9.5px;
+    color: var(--color-ink-4);
+    font-feature-settings: "tnum";
+  }
+
+  /* Type specimen */
+  .type-row {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 32px;
+    padding: 20px 0;
+    border-bottom: var(--border-thin);
+    align-items: baseline;
+  }
+  .type-row:last-child { border-bottom: 0; }
+  .type-row__meta {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--color-ink-3); letter-spacing: 0.04em;
+    line-height: 1.6;
+  }
+  .type-row__meta b {
+    display: block; font-family: var(--font-mono);
+    color: var(--color-ink); font-size: 11px; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .type-row__sample { min-width: 0; text-wrap: pretty; }
+
+  /* Spacing demo */
+  .sp-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 24px;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: var(--border-thin);
+  }
+  .sp-row__label {
+    font-family: var(--font-mono); font-size: 11px;
+    letter-spacing: 0.04em; color: var(--color-ink-2);
+    font-weight: 500;
+  }
+  .sp-row__label span {
+    color: var(--color-ink-4); margin-left: 8px;
+    font-weight: 400;
+  }
+  .sp-row__bar {
+    height: 12px;
+    background: var(--color-indigo-tint);
+    border-left: 2px solid var(--color-indigo);
+  }
+
+  /* Motion demo */
+  .motion-row {
+    display: grid;
+    grid-template-columns: 140px 1fr 100px;
+    gap: 24px; align-items: center;
+    padding: 12px 0; border-bottom: var(--border-thin);
+  }
+  .motion-row__label {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--color-ink-2); font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .motion-row__track {
+    height: 6px; background: var(--color-bg-2);
+    border-radius: 3px; position: relative; overflow: hidden;
+  }
+  .motion-row__track::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: var(--color-indigo);
+    transform-origin: left;
+    animation: motionDemo linear infinite;
+    border-radius: 3px;
+  }
+  @keyframes motionDemo {
+    0% { transform: scaleX(0); }
+    50% { transform: scaleX(1); }
+    50.01% { transform: scaleX(1) translateX(-100%); }
+    100% { transform: scaleX(0) translateX(0); }
+  }
+  .motion-row__dur {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--color-ink-3); text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Tables */
+  table.cat-table {
+    width: 100%; border-collapse: collapse;
+    font-family: var(--font-sans); font-size: 13px;
+    margin-top: 12px;
+  }
+  table.cat-table th,
+  table.cat-table td {
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: var(--border-thin);
+    vertical-align: top;
+  }
+  table.cat-table th {
+    font-family: var(--font-mono); font-size: 10px;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--color-ink-4); font-weight: 500;
+  }
+  table.cat-table td code,
+  table.cat-table th code {
+    font-family: var(--font-mono); font-size: 12px;
+    color: var(--color-indigo); background: var(--color-indigo-tint);
+    padding: 2px 6px; border-radius: 3px; letter-spacing: 0;
+  }
+  table.cat-table td.serif {
+    font-family: var(--font-serif); font-style: italic;
+    font-size: 13.5px; color: var(--color-ink-3);
+    line-height: 1.5; text-wrap: pretty;
+  }
+
+  /* Inline graph mini-canvas demo */
+  .cat-graph-demo {
+    height: 260px;
+    border: var(--border-rule);
+    border-radius: var(--radius-md);
+    background: var(--color-paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .cat-graph-demo svg { width: 100%; height: 100%; display: block; }
+
+  /* Footer */
+  .cat-foot {
+    margin-top: 120px; padding-top: 32px;
+    border-top: var(--border-rule);
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 32px; align-items: baseline;
+    font-family: var(--font-mono); font-size: 10.5px;
+    letter-spacing: 0.04em; color: var(--color-ink-4);
+  }
+  .cat-foot__meta { font-style: italic; font-family: var(--font-serif);
+    font-size: 13px; color: var(--color-ink-3); letter-spacing: 0; }
+</style>
+
+<script>
+/* Build color/spacing/motion catalogs from a small declarative manifest.
+   Keeps the HTML clean while making it easy to extend. */
+window.addEventListener('DOMContentLoaded', () => {
+  /* ---------- Colors ---------- */
+  const colorGroups = [
+    {
+      label: 'Surfaces — papier, crème',
+      colors: [
+        ['paper','--color-paper','#fefcfa'],
+        ['bg','--color-bg','#f7f5f0'],
+        ['bg-2','--color-bg-2','#f0ede5'],
+        ['bg-3','--color-bg-3','#eae6dc'],
+      ]
+    },
+    {
+      label: 'Encre — hiérarchie typographique',
+      colors: [
+        ['ink','--color-ink','#1f2230'],
+        ['ink-2','--color-ink-2','#4a4e5e'],
+        ['ink-3','--color-ink-3','#7a7d8a'],
+        ['ink-4','--color-ink-4','#a8aab2'],
+      ]
+    },
+    {
+      label: 'Rules — séparateurs',
+      colors: [
+        ['rule','--color-rule','#d8d4c8'],
+        ['rule-2','--color-rule-2','#e3dfd2'],
+        ['rule-3','--color-rule-3','#e9e6da'],
+      ]
+    },
+    {
+      label: 'Accents — usage rare',
+      colors: [
+        ['indigo','--color-indigo','#3b3a78'],
+        ['indigo-tint','--color-indigo-tint','#ebe9f5'],
+        ['amber','--color-amber','#c08a3e'],
+        ['amber-tint','--color-amber-tint','#f4ecd9'],
+        ['moss','--color-moss','#5a8264'],
+        ['moss-tint','--color-moss-tint','#dfead8'],
+        ['rose','--color-rose','#a55a55'],
+        ['rose-tint','--color-rose-tint','#f0d7d3'],
+      ]
+    }
+  ];
+  const colorEl = document.getElementById('color-content');
+  colorGroups.forEach(g => {
+    const block = document.createElement('div');
+    block.className = 'cat-block';
+    block.innerHTML = `
+      <div class="cat-block__label">${g.label.split(' — ')[0]}</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">${g.label.split(' — ')[1] ?? ''}</h3>
+        <div class="cat-demo">
+          <div class="swatch-grid"></div>
+        </div>
+      </div>`;
+    const grid = block.querySelector('.swatch-grid');
+    g.colors.forEach(([name, varName, hex]) => {
+      const sw = document.createElement('div');
+      sw.className = 'swatch';
+      sw.innerHTML = `
+        <div class="swatch__chip" style="background: var(${varName});"></div>
+        <div class="swatch__name">${name}</div>
+        <div class="swatch__var">${varName}</div>
+        <div class="swatch__val">${hex}</div>`;
+      grid.appendChild(sw);
+    });
+    colorEl.appendChild(block);
+  });
+
+  /* ---------- Spacing ---------- */
+  const spScale = [
+    ['--sp-1','4px'],['--sp-2','8px'],['--sp-3','12px'],['--sp-4','16px'],
+    ['--sp-5','20px'],['--sp-6','24px'],['--sp-8','32px'],['--sp-10','40px'],
+    ['--sp-12','48px'],['--sp-16','64px'],['--sp-20','80px'],['--sp-24','96px'],
+  ];
+  const spEl = document.getElementById('spacing-rows');
+  spScale.forEach(([token, val]) => {
+    const r = document.createElement('div');
+    r.className = 'sp-row';
+    r.innerHTML = `
+      <div class="sp-row__label">${token} <span>${val}</span></div>
+      <div class="sp-row__bar" style="width: ${val};"></div>`;
+    spEl.appendChild(r);
+  });
+
+  /* ---------- Motion ---------- */
+  const motions = [
+    ['quick','120ms'],['base','180ms'],['mid','280ms'],['slow','400ms'],['bloom','1600ms']
+  ];
+  const motionEl = document.getElementById('motion-rows');
+  motions.forEach(([name, dur]) => {
+    const r = document.createElement('div');
+    r.className = 'motion-row';
+    r.innerHTML = `
+      <div class="motion-row__label">--motion-${name}</div>
+      <div class="motion-row__track" style="--d: ${dur};"></div>
+      <div class="motion-row__dur">${dur}</div>`;
+    r.querySelector('.motion-row__track').style.setProperty('animation-duration', `calc(${dur} * 2)`);
+    motionEl.appendChild(r);
+  });
+
+  /* ---------- Static popover demo: show always-open ---------- */
+  document.querySelectorAll('.demo-popover').forEach(el => el.classList.add('is-open'));
+});
+</script>
+</head>
+<body>
+
+<div class="cat-shell">
+
+  <!-- ============ Top bar ============ -->
+  <header class="cat-topbar">
+    <span><b>LE VEILLEUR</b> · Design System</span>
+    <span>v 1.0</span>
+    <nav>
+      <a href="#tokens">Tokens</a>
+      <a href="#base">Base</a>
+      <a href="#components">Components</a>
+      <a href="#patterns">Patterns</a>
+      <a href="#vue">Vue API</a>
+    </nav>
+  </header>
+
+  <!-- ============ Hero ============ -->
+  <section class="cat-hero">
+    <div class="eyebrow">Catalogue de référence · vue + typescript</div>
+    <h1>Une grammaire <em>silencieuse</em> pour un outil d'attention.</h1>
+    <p>
+      Ce design system décrit tous les éléments visuels et d'interaction du Veilleur.
+      Il existe pour qu'une équipe puisse construire des écrans qui appartiennent à
+      l'utilisateur — pas à son IA. Tokens, composants CSS, types et composables Vue 3.
+    </p>
+    <div class="meta">
+      <span><b>56</b>tokens</span>
+      <span><b>15</b>composants CSS</span>
+      <span><b>3</b>composables</span>
+      <span><b>5</b>SFC Vue</span>
+      <span><b>0</b>dépendances runtime</span>
+    </div>
+  </section>
+
+  <!-- ============ 01 · TOKENS ============ -->
+  <section class="cat-section" id="tokens">
+    <header class="cat-section-head">
+      <span class="num">01 · Tokens</span>
+      <div>
+        <h2>Le vocabulaire de base — <em>palette, type, espace, mouvement</em>.</h2>
+        <p>
+          Tout est custom property CSS. Aucun framework. À importer en premier, avant
+          la base et les composants.
+        </p>
+      </div>
+    </header>
+
+    <!-- Colors -->
+    <div id="color-content"></div>
+
+    <!-- Typography -->
+    <div class="cat-block">
+      <div class="cat-block__label">Type</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Échelle typographique <code>tokens/typography.css</code></h3>
+        <p class="cat-block__desc">
+          Trois familles, peu de tailles. Newsreader pour la lecture, IBM Plex Sans pour les
+          contrôles, IBM Plex Mono pour les labels système. L'italique du Newsreader est
+          réservé aux réflexions personnelles et aux mots-clés métier.
+        </p>
+        <div class="cat-demo">
+          <div class="type-row">
+            <div class="type-row__meta"><b>display · 46px</b>--type-display<br>serif · 400 · ls -.024em</div>
+            <div class="type-row__sample t-display">Mémoire <em>active</em></div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>h1 · 38px</b>--type-h1<br>serif · 400 · ls -.022em</div>
+            <div class="type-row__sample t-h1">MCP &amp; standardisation des <em>agents</em></div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>h2 · 22px</b>--type-h2<br>serif · 500 · ls -.014em</div>
+            <div class="type-row__sample t-h2">Que faire en l'ajoutant à <em>cette piste</em> ?</div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>h3 · 18px</b>--type-h3<br>serif · 500</div>
+            <div class="type-row__sample t-h3">Codex policies — graduated approvals as ecosystem move</div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>lead · 18px</b>--type-lead<br>serif italic · 300</div>
+            <div class="type-row__sample t-lead">L'écosystème MCP devient le standard de fait. Le vrai sujet n'est pas l'adoption — c'est la <b>granularité</b> des politiques.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>body · 16px</b>--type-body<br>serif · 400</div>
+            <div class="type-row__sample t-body">Vous gardez actives toutes les lectures sur l'hardware dédié. Le système l'a remarqué.</div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>caption · 13px</b>--type-caption<br>serif italic</div>
+            <div class="type-row__sample t-caption">9 traces sur 31 jours · piste ouverte par vous</div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>eyebrow · 10px</b>--type-eyebrow<br>mono · uppercase · ls .22em</div>
+            <div class="type-row__sample t-eyebrow">PISTE · OUVERTE DEPUIS 12 JOURS</div>
+          </div>
+          <div class="type-row">
+            <div class="type-row__meta"><b>quote</b>--type-body<br>serif italic + “ ”</div>
+            <div class="type-row__sample t-quote">Préciser le schéma d'autorisation par classes d'outils avant la note de thèse.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Spacing -->
+    <div class="cat-block">
+      <div class="cat-block__label">Espace</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Échelle d'espacement <code>tokens/spacing.css</code></h3>
+        <p class="cat-block__desc">
+          Multiples de 4px. Le rythme dominant est <code>--sp-6</code> (24px) entre éléments,
+          <code>--sp-12</code> entre sections, <code>--sp-24</code> en fin de page.
+        </p>
+        <div class="cat-demo">
+          <div id="spacing-rows"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Radius / Border / Shadow -->
+    <div class="cat-block">
+      <div class="cat-block__label">Forme</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Radius, borders, ombres</h3>
+        <p class="cat-block__desc">
+          Tout reste discret. Les radius sont fins (jamais &gt; 6px sauf modals).
+          Les ombres ne servent qu'à signaler la profondeur d'un popover ou d'un modal.
+        </p>
+        <div class="cat-demo">
+          <table class="cat-table">
+            <thead><tr><th>Token</th><th>Valeur</th><th>Usage</th></tr></thead>
+            <tbody>
+              <tr><td><code>--radius-sm</code></td><td>3px</td><td class="serif">tags, petits boutons</td></tr>
+              <tr><td><code>--radius-md</code></td><td>4px</td><td class="serif">cards, modals usuels, popovers</td></tr>
+              <tr><td><code>--radius-lg</code></td><td>6px</td><td class="serif">grandes modals</td></tr>
+              <tr><td><code>--radius-pill</code></td><td>999px</td><td class="serif">mode toggle, tag pill</td></tr>
+              <tr><td><code>--border-hair</code></td><td>0.5px</td><td class="serif">dividers les plus discrets</td></tr>
+              <tr><td><code>--border-thin</code></td><td>1px var(--color-rule-2)</td><td class="serif">items de liste</td></tr>
+              <tr><td><code>--border-rule</code></td><td>1px var(--color-rule)</td><td class="serif">cadres principaux</td></tr>
+              <tr><td><code>--shadow-popover</code></td><td>0 8 24, 0 2 6</td><td class="serif">popovers contextuels</td></tr>
+              <tr><td><code>--shadow-modal</code></td><td>0 24 64, 0 4 12</td><td class="serif">modals (cf. déplacer/lier)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Motion -->
+    <div class="cat-block">
+      <div class="cat-block__label">Mouvement</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Durées et courbes <code>tokens/motion.css</code></h3>
+        <p class="cat-block__desc">
+          Toutes les transitions UI restent sous 280ms. Pas de bounce. Pas de spectaculaire.
+          La courbe par défaut est éditoriale : <code>cubic-bezier(.2, .7, .3, 1)</code>.
+        </p>
+        <div class="cat-demo">
+          <div id="motion-rows"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 02 · BASE ============ -->
+  <section class="cat-section" id="base">
+    <header class="cat-section-head">
+      <span class="num">02 · Base</span>
+      <div>
+        <h2>Reset, typographie, layout — <em>l'ossature</em>.</h2>
+        <p>
+          Classes utilitaires minimalistes pour titres, citations, conteneurs.
+          Toutes les classes sont préfixées <code style="background:var(--color-indigo-tint);color:var(--color-indigo);padding:2px 6px;border-radius:3px;font-family:var(--font-mono);font-size:13px">.t-</code>
+          pour la typographie et <code style="background:var(--color-indigo-tint);color:var(--color-indigo);padding:2px 6px;border-radius:3px;font-family:var(--font-mono);font-size:13px">.v-</code>
+          pour les composants.
+        </p>
+      </div>
+    </header>
+
+    <div class="cat-block">
+      <div class="cat-block__label">Page header</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">En-tête éditorial <code>.v-page-header</code></h3>
+        <p class="cat-block__desc">Composition standard pour le haut d'écran : eyebrow mono + titre serif large + lead italic.</p>
+        <div class="cat-demo">
+          <header class="v-page-header" style="padding-top:0">
+            <div class="v-page-header__eyebrow"><span class="mark"></span>Mémoire active · espace personnel</div>
+            <h1 class="t-display">Votre espace. Vos <em>fils</em>. Votre pensée à long terme.</h1>
+            <p class="t-lead" style="margin-top:12px;max-width:62ch">Ce que vous gardez vivant ici devient progressivement la mémoire stratégique du Veilleur.</p>
+          </header>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 03 · COMPONENTS ============ -->
+  <section class="cat-section" id="components">
+    <header class="cat-section-head">
+      <span class="num">03 · Components</span>
+      <div>
+        <h2>Composants atomiques et molécules — <em>le vocabulaire courant</em>.</h2>
+        <p>
+          Tout ce qui est utilisé plusieurs fois dans la Mémoire active. Pour chaque
+          composant : un usage, une démonstration, et la classe correspondante.
+        </p>
+      </div>
+    </header>
+
+    <!-- Buttons -->
+    <div class="cat-block">
+      <div class="cat-block__label">Boutons</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Bouton mono <code>.v-btn</code></h3>
+        <p class="cat-block__desc">Tous les boutons d'action sont en mono uppercase. Trois variants : ghost (défaut), primary (action forte), indigo (action attribuée à l'utilisateur).</p>
+        <div class="cat-demo cat-demo--canvas">
+          <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+            <button class="v-btn">Renommer</button>
+            <button class="v-btn v-btn--primary">Créer</button>
+            <button class="v-btn v-btn--indigo">Partager</button>
+            <button class="v-btn-ghost">Annuler</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-block">
+      <div class="cat-block__label">Toggle</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Mode toggle <code>.v-mode-toggle</code></h3>
+        <p class="cat-block__desc">Segmented control pour basculer entre vues principales (Arborescence ↔ Graphe). Conserve la sélection visible mais discrète.</p>
+        <div class="cat-demo cat-demo--canvas">
+          <div class="v-mode-toggle">
+            <button class="v-mode-toggle__btn v-mode-toggle__btn--on">Arborescence</button>
+            <button class="v-mode-toggle__btn">Graphe</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="cat-block">
+      <div class="cat-block__label">Tags · dots</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Tag, dot, status <code>.v-tag · .v-dot · .v-status</code></h3>
+        <p class="cat-block__desc">Marqueurs sémantiques. Le tag est une pill bordée (jamais remplie). Le dot accompagne une piste. Le status pill colore le rôle d'un signal.</p>
+        <div class="cat-demo cat-demo--canvas">
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <span class="v-tag v-tag--axis">axe · IA agents</span>
+            <span class="v-tag v-tag--tension">tension active</span>
+            <span class="v-tag v-tag--emerging">émergent</span>
+            <span class="v-tag">12 jours</span>
+            <span class="v-tag">14 traces</span>
+          </div>
+          <div style="display:flex;gap:16px;align-items:center;margin-top:16px">
+            <div style="display:flex;align-items:center;gap:8px"><span class="v-dot v-dot--indigo"></span><span class="t-meta">Vous</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span class="v-dot v-dot--moss"></span><span class="t-meta">Convergent</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span class="v-dot v-dot--amber"></span><span class="t-meta">Évènement</span></div>
+            <div style="display:flex;align-items:center;gap:8px"><span class="v-dot v-dot--rose"></span><span class="t-meta">Tension</span></div>
+          </div>
+          <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:16px">
+            <span class="v-status v-status--emergent">Signal émergent</span>
+            <span class="v-status v-status--convergent">Convergence</span>
+            <span class="v-status v-status--tension">Tension</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="cat-block">
+      <div class="cat-block__label">Note pin</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Note épinglée — centerpiece <code>.v-pinned</code></h3>
+        <p class="cat-block__desc">La note de plus haute valeur d'une piste. Sert d'ancrage stratégique. Une seule par piste, attribuée par l'utilisateur.</p>
+        <div class="cat-demo">
+          <blockquote class="v-pinned">
+            <div class="v-pinned__mark">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v15M9 7l3-5 3 5M8 22h8"/></svg>
+              Note épinglée
+            </div>
+            <p class="v-pinned__body">L'écosystème MCP devient le standard de fait. Le vrai sujet n'est pas l'adoption — c'est la <b>granularité</b> des politiques d'autorisation. Préciser le schéma par classes d'outils.</p>
+            <div class="v-pinned__foot">
+              <span>21 mai · épinglée par vous</span>
+              <span class="v-btn-ghost" style="margin-left:auto">Éditer</span>
+            </div>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+
+    <div class="cat-block">
+      <div class="cat-block__label">Whisper</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Système · murmure <code>.v-whisper</code></h3>
+        <p class="cat-block__desc">Suggestion système discrète. Dashed border. Label vertical. N'organise jamais l'espace — il le murmure en marge.</p>
+        <div class="cat-demo">
+          <div class="v-whisper">
+            <div class="v-whisper__mark">Système</div>
+            <div class="v-whisper__body">
+              Le système relie <em>5 lectures</em> de cette piste à <a href="#">Politiques d'approbation graduées</a>, un signal qui émerge ailleurs dans votre veille.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Popover -->
+    <div class="cat-block">
+      <div class="cat-block__label">Popover</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Popover contextuel <code>.v-popover</code></h3>
+        <p class="cat-block__desc">
+          Apparaît au clic sur une entité (article, note, évènement). Quatre variantes :
+          entité, note, espace vide (création de piste), picker d'articles. Toujours
+          au-dessus du graphe, jamais persistant.
+        </p>
+
+        <div class="cat-demo" style="min-height:280px;padding:32px 32px 64px;display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start">
+          <!-- entity popover -->
+          <div class="v-popover demo-popover" style="position:static">
+            <div class="v-popover__head"><span>Article</span><span class="ctx">Why MCP wins</span></div>
+            <button class="v-popover__item v-popover__item--primary">
+              <svg class="v-popover__item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 5v14M5 12h14"/></svg>
+              Créer une note
+            </button>
+            <button class="v-popover__item">
+              <svg class="v-popover__item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 17L17 7M17 7H8M17 7v9"/></svg>
+              Ouvrir
+            </button>
+            <button class="v-popover__item v-popover__item--pinned">
+              <svg class="v-popover__item__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 2v15M9 7l3-5 3 5M8 22h8"/></svg>
+              Épingler une note
+            </button>
+          </div>
+
+          <!-- empty -->
+          <div class="v-popover demo-popover" style="position:static">
+            <div class="v-popover__head"><span>Nouveau · espace vide</span></div>
+            <div class="v-popover__input-row">
+              <input type="text" placeholder="Nom de la nouvelle piste…" value="Open-source AI economics" />
+              <button class="v-btn v-btn--primary">Créer</button>
+            </div>
+            <div class="v-popover__foot">Une piste est un fil que vous décidez de suivre. <kbd>Esc</kbd> pour annuler.</div>
+          </div>
+
+          <!-- picker (compact) -->
+          <div class="v-popover v-popover--picker demo-popover" style="position:static">
+            <div class="v-popover__head"><span>Ajouter à</span><span class="ctx">MCP &amp; standardisation</span></div>
+            <div class="v-popover__search">
+              <input type="text" placeholder="Filtrer parmi vos articles sauvegardés…" />
+            </div>
+            <div class="v-popover__list">
+              <button class="v-popover__list-item">
+                <span class="v-popover__list-item__title">Edge inference economics</span>
+                <span class="v-popover__list-item__meta"><b>a16z</b><span>21 mai</span></span>
+              </button>
+              <button class="v-popover__list-item">
+                <span class="v-popover__list-item__title">RAG is dead, long live RAG</span>
+                <span class="v-popover__list-item__meta"><b>Latent Space</b><span>15 mai</span></span>
+              </button>
+              <button class="v-popover__list-item v-popover__list-item--disabled" disabled>
+                <span class="v-popover__list-item__title">Why MCP wins</span>
+                <span class="v-popover__list-item__meta"><b>Stratechery</b><span>déjà dans cette piste</span></span>
+              </button>
+            </div>
+            <div class="v-popover__foot">Choisissez un article. <kbd>Esc</kbd> pour fermer.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="cat-block">
+      <div class="cat-block__label">Modal</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Déplacer ou lier <code>.v-modal · .v-choice</code></h3>
+        <p class="cat-block__desc">
+          Modal de décision quand l'utilisateur dépose un article sur une piste différente.
+          Le copywriting est explicite plutôt que techniciste — pas de "déplacer / copier".
+        </p>
+        <div class="cat-demo cat-demo--inset" style="background: oklch(0% 0 0 / 0.18); display:flex; justify-content:center; padding:32px 0">
+          <div class="v-modal">
+            <header class="v-modal__head">
+              <div class="v-modal__eyebrow">Cet article est déjà dans une piste</div>
+              <h3 class="v-modal__title">Que faire en l'ajoutant à <em>Souveraineté IA EU</em> ?</h3>
+              <p class="v-modal__lead">Il appartient à <b>MCP &amp; standardisation</b>. Choisissez comment le rattacher à <b>Souveraineté IA EU</b>.</p>
+            </header>
+            <div class="v-modal__body">
+              <button class="v-choice">
+                <span class="v-choice__label">Le déplacer</span>
+                <span class="v-choice__title">Le retirer de « MCP &amp; standardisation »</span>
+                <span class="v-choice__sub">Il ne figurera plus que dans « Souveraineté IA EU ».</span>
+              </button>
+              <button class="v-choice">
+                <span class="v-choice__label">Le lier aux deux pistes</span>
+                <span class="v-choice__title">Le garder dans « MCP » et le relier aussi à « Souveraineté IA EU »</span>
+                <span class="v-choice__sub">Il restera relié aux deux pistes. Utile quand l'article éclaire plusieurs fils en même temps.</span>
+              </button>
+            </div>
+            <footer class="v-modal__foot">
+              <button class="v-btn-ghost">Annuler</button>
+            </footer>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stream item -->
+    <div class="cat-block">
+      <div class="cat-block__label">Trace</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Stream item <code>.v-stream-item</code></h3>
+        <p class="cat-block__desc">Une trace chronologique dans une piste. Trois variantes selon le kind (note, article, event). Garde l'annotation utilisateur en marge.</p>
+        <div class="cat-demo">
+          <article class="v-stream-item">
+            <div class="v-stream-item__date"><b>20 mai</b>09:47</div>
+            <div>
+              <div class="v-stream-item__kind v-stream-item__kind--article">Article sauvegardé</div>
+              <h4 class="v-stream-item__title">Codex policies — graduated approvals as ecosystem move</h4>
+              <div class="v-stream-item__src"><b>a16z</b><span class="sep"></span><span>gardé actif</span></div>
+              <div class="v-annotation">
+                <span class="v-annotation__label">votre note</span>
+                Excellent cadre de pensée pour les politiques d'approbation. À comparer à l'approche Anthropic.
+              </div>
+            </div>
+          </article>
+          <article class="v-stream-item">
+            <div class="v-stream-item__date"><b>21 mai</b>11:24</div>
+            <div>
+              <div class="v-stream-item__kind v-stream-item__kind--note">Note</div>
+              <p class="v-note-inline">Hypothèse : si Pinterest publie, alors les standards graduated-approval deviennent le défaut.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <!-- Graph -->
+    <div class="cat-block">
+      <div class="cat-block__label">Graph</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Mode mémoire mentale <code>.v-graph · .v-gnode · .v-gedge</code></h3>
+        <p class="cat-block__desc">
+          Représente la mémoire mentale de l'utilisateur. Pas la cartographie globale du savoir.
+          Positions semi-stables, expand/collapse par cluster. Drag-drop d'articles entre pistes.
+        </p>
+        <div class="cat-demo cat-demo--inset">
+          <div class="cat-graph-demo">
+            <svg viewBox="0 0 600 260" preserveAspectRatio="xMidYMid meet">
+              <!-- edges -->
+              <path class="v-gedge v-gedge--user" d="M180 130 Q 130 90 90 60" />
+              <path class="v-gedge v-gedge--user" d="M180 130 Q 130 170 90 200" />
+              <path class="v-gedge v-gedge--user" d="M180 130 Q 230 90 270 60" />
+              <path class="v-gedge v-gedge--implicit" d="M90 60 Q 180 30 270 60" />
+              <!-- piste A -->
+              <g class="v-gnode v-gnode--piste is-expanded">
+                <circle class="v-gnode__bg-piste" cx="180" cy="130" r="22"/>
+                <circle class="v-gnode__dot-piste" cx="180" cy="130" r="3.4"/>
+                <text class="v-gnode__label-piste" x="180" y="170" text-anchor="middle">MCP &amp; standardisation</text>
+                <text class="v-gnode__axis-piste" x="180" y="186" text-anchor="middle">axe · IA agents</text>
+              </g>
+              <!-- satellites -->
+              <g class="v-gnode v-gnode--article"><circle class="v-gnode__bg-article" cx="90" cy="60" r="6"/><text class="v-gnode__label-article" x="80" y="58" text-anchor="end">Codex policies</text></g>
+              <g class="v-gnode v-gnode--article"><circle class="v-gnode__bg-article" cx="90" cy="200" r="6"/><text class="v-gnode__label-article" x="80" y="198" text-anchor="end">Agent permission stack</text></g>
+              <g class="v-gnode v-gnode--article"><circle class="v-gnode__bg-article" cx="270" cy="60" r="6"/><text class="v-gnode__label-article" x="282" y="58" text-anchor="start">Why MCP wins</text></g>
+              <!-- piste B (collapsed) -->
+              <g class="v-gnode v-gnode--piste">
+                <circle class="v-gnode__bg-piste" cx="460" cy="100" r="20" style="stroke:var(--color-moss)"/>
+                <circle class="v-gnode__dot-piste" cx="460" cy="100" r="3.2" style="fill:var(--color-moss)"/>
+                <text class="v-gnode__label-piste" x="460" y="140" text-anchor="middle">Souveraineté IA EU</text>
+                <text class="v-gnode__axis-piste" x="460" y="156" text-anchor="middle">axe · régulation</text>
+              </g>
+              <!-- piste C (collapsed, amber) -->
+              <g class="v-gnode v-gnode--piste">
+                <circle class="v-gnode__bg-piste" cx="510" cy="200" r="18" style="stroke:var(--color-amber)"/>
+                <circle class="v-gnode__dot-piste" cx="510" cy="200" r="3" style="fill:var(--color-amber)"/>
+                <text class="v-gnode__label-piste" x="510" y="234" text-anchor="middle">Interfaces physiques</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <table class="cat-table">
+          <thead><tr><th>Classe</th><th>État</th><th>Quand</th></tr></thead>
+          <tbody>
+            <tr><td><code>.v-gcluster</code></td><td>—</td><td class="serif">wrapper d'une piste et ses satellites</td></tr>
+            <tr><td><code>.v-gcluster.is-expanded</code></td><td>déplié</td><td class="serif">les satellites + edges deviennent visibles</td></tr>
+            <tr><td><code>.v-gnode--piste</code></td><td>—</td><td class="serif">ancre de piste (anchor toujours visible)</td></tr>
+            <tr><td><code>.v-gnode--article</code></td><td>—</td><td class="serif">satellite article sauvegardé</td></tr>
+            <tr><td><code>.v-gnode--note.is-pinned</code></td><td>épinglée</td><td class="serif">note épinglée (encadré amber)</td></tr>
+            <tr><td><code>.v-gnode--piste.is-drop-target</code></td><td>survol drop</td><td class="serif">drag actif au-dessus de cette piste</td></tr>
+            <tr><td><code>.v-gnode--piste.is-drop-target.is-no-drop</code></td><td>refus</td><td class="serif">la cible refuse (déjà liée / source)</td></tr>
+            <tr><td><code>.v-gedge--system.is-on</code></td><td>visible</td><td class="serif">lien système (apparition uniquement si endpoint expanded)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 04 · PATTERNS ============ -->
+  <section class="cat-section" id="patterns">
+    <header class="cat-section-head">
+      <span class="num">04 · Patterns</span>
+      <div>
+        <h2>Compositions canoniques — <em>comment ça s'assemble</em>.</h2>
+        <p>
+          Trois patterns suffisent pour reconstruire la quasi-totalité des écrans du Veilleur :
+          page header éditorial, layout rail + colonne, et stream chronologique.
+        </p>
+      </div>
+    </header>
+
+    <div class="cat-block">
+      <div class="cat-block__label">Layout</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Rail + colonne <code>.v-mem-layout</code></h3>
+        <p class="cat-block__desc">236px rail sticky + colonne max 760px. Le rail scrolle indépendamment, la colonne respire.</p>
+        <div class="cat-demo cat-demo--inset" style="padding:24px">
+          <div class="v-mem-layout" style="padding-top:0">
+            <aside class="v-rail" style="position:static;max-height:none">
+              <div class="v-rail-section">
+                <div class="v-rail-section__head"><span>Pistes</span><span>+ nouvelle</span></div>
+                <ul class="v-piste-index">
+                  <li class="v-piste-index__item v-piste-index__item--open"><span class="v-dot v-dot--indigo"></span><span class="name">MCP &amp; standardisation</span><span class="meta">12j · 14</span></li>
+                  <li class="v-piste-index__item"><span class="v-dot v-dot--moss"></span><span class="name">Souveraineté IA EU</span><span class="meta">31j · 09</span></li>
+                  <li class="v-piste-index__item"><span class="v-dot v-dot--amber"></span><span class="name">Interfaces physiques</span><span class="meta">8j · 06</span></li>
+                  <li class="v-piste-index__item v-piste-index__item--dormant"><span class="v-dot"></span><span class="name">Edge inference</span><span class="meta">3 mois</span></li>
+                </ul>
+              </div>
+            </aside>
+            <div class="v-piste-column">
+              <div class="v-piste-mast">
+                <div class="v-piste-mast__left"><span>Piste · ouverte depuis <b>12 jours</b></span><span>14 traces</span></div>
+                <div class="v-piste-mast__actions">
+                  <button class="v-btn">Renommer</button>
+                  <button class="v-btn v-btn--indigo">Partager</button>
+                </div>
+              </div>
+              <h2 class="v-piste-title">MCP &amp; standardisation des <em>agents</em></h2>
+              <p class="v-piste-axis">Pourquoi les politiques d'autorisation gagnent l'écosystème — et comment se positionner.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 05 · VUE API ============ -->
+  <section class="cat-section" id="vue">
+    <header class="cat-section-head">
+      <span class="num">05 · Vue API</span>
+      <div>
+        <h2>Types et composables — <em>l'implémentation</em>.</h2>
+        <p>
+          Toute interaction non triviale est encapsulée dans un composable.
+          Le code Vue reste descriptif et lisible.
+        </p>
+      </div>
+    </header>
+
+    <div class="cat-block">
+      <div class="cat-block__label">Types</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Types métier <code>vue/types.ts</code></h3>
+        <p class="cat-block__desc">Les types sont minces — ils décrivent uniquement ce que l'UI a besoin de connaître.</p>
+        <table class="cat-table">
+          <thead><tr><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>Piste</code></td><td class="serif">Un fil de pensée. Origin: <code>user</code> ou <code>system</code>. Statut: <code>active</code> / <code>dormant</code> / <code>emerging</code> / <code>tension</code>.</td></tr>
+            <tr><td><code>Article</code></td><td class="serif">Article sauvegardé en favoris. Peut être rattaché à 0..n pistes.</td></tr>
+            <tr><td><code>Note</code></td><td class="serif">Réflexion personnelle. Peut être épinglée comme centerpiece d'une piste.</td></tr>
+            <tr><td><code>DomainEvent</code></td><td class="serif">Fait externe daté (annonce, régulation, release).</td></tr>
+            <tr><td><code>Trace</code></td><td class="serif">Union typée : note | article | event. Utilisée par le stream.</td></tr>
+            <tr><td><code>GraphEdge</code></td><td class="serif">Arête entre deux pistes. Kind: <code>user</code> / <code>implicit</code> / <code>system</code>.</td></tr>
+            <tr><td><code>DropDecision</code></td><td class="serif">"move" | "link" | "cancel". Renvoyé par la modal de drop.</td></tr>
+            <tr><td><code>PopoverContext</code></td><td class="serif">Union qui définit ce que le popover affiche : empty / entity / note / picker.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="cat-block">
+      <div class="cat-block__label">Composables</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">Trois composables couvrent toutes les interactions <code>useMemoryGraph · usePopover · useArticleDnD</code></h3>
+        <p class="cat-block__desc">Tous renvoient une API stable. Tous sont stateless en dehors du return — n'utilisent ni provide/inject ni store global. À composer dans le composant racine du mode Mémoire.</p>
+        <table class="cat-table">
+          <thead><tr><th>Composable</th><th>Responsabilité</th><th>API clé</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><code>useMemoryGraph</code></td>
+              <td class="serif">État du graphe : clusters, expand/collapse, focused piste, création.</td>
+              <td><code>toggleCluster(id)</code> · <code>collapseAll()</code> · <code>addPisteAt(name, xy)</code> · <code>attachArticleToPiste(id, art)</code></td>
+            </tr>
+            <tr>
+              <td><code>usePopover</code></td>
+              <td class="serif">Un popover ouvert à la fois. Auto-close au clic extérieur + Esc. Anti-overflow.</td>
+              <td><code>open({ position, context })</code> · <code>close()</code> · <code>isOpen</code></td>
+            </tr>
+            <tr>
+              <td><code>useArticleDnD</code></td>
+              <td class="serif">Drag-drop d'un article vers une autre piste. Renvoie une décision au drop.</td>
+              <td><code>beginDrag(e, payload)</code> · callback <code>onDrop(decision)</code></td>
+            </tr>
+          </tbody>
+        </table>
+        <pre class="cat-code"><span class="c-com">// composant racine du mode mémoire</span>
+<span class="c-kw">import</span> { useMemoryGraph } <span class="c-kw">from</span> <span class="c-str">"@veilleur/ds/vue/composables/useMemoryGraph"</span>
+<span class="c-kw">import</span> { usePopover }     <span class="c-kw">from</span> <span class="c-str">"@veilleur/ds/vue/composables/usePopover"</span>
+<span class="c-kw">import</span> { useArticleDnD }  <span class="c-kw">from</span> <span class="c-str">"@veilleur/ds/vue/composables/useArticleDnD"</span>
+
+<span class="c-kw">const</span> graph   = <span class="c-tag">useMemoryGraph</span>({ pistes, satellitesByPiste, edges })
+<span class="c-kw">const</span> popover = <span class="c-tag">usePopover</span>()
+<span class="c-kw">const</span> dnd     = <span class="c-tag">useArticleDnD</span>({
+  resolveTargetAt: (xy) => graph.<span class="c-tag">resolveTargetUnder</span>(xy),
+  onDrop: (pending) => {
+    <span class="c-com">// open the move/link modal with `pending`</span>
+    pendingDrop.value = pending
+  }
+})</pre>
+      </div>
+    </div>
+
+    <div class="cat-block">
+      <div class="cat-block__label">Components</div>
+      <div class="cat-block__body">
+        <h3 class="cat-block__title">SFC scaffolds — <em>à recopier, pas à dépendre</em></h3>
+        <p class="cat-block__desc">
+          Les composants Vue livrés ne sont pas une lib runtime — ils sont des scaffolds canoniques
+          documentés à partir desquels chaque équipe construit. Cela évite le couplage et garde la
+          maîtrise locale du visuel.
+        </p>
+        <table class="cat-table">
+          <thead><tr><th>SFC</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <tr><td><code>ActionPopover.vue</code></td><td class="serif">Rend le popover contextuel selon usePopover().context. Quatre variantes (entité / note / vide / picker).</td></tr>
+            <tr><td><code>MoveLinkModal.vue</code></td><td class="serif">Modal de décision sur drop. Émet <code>decide(decision, pending)</code>. Copywriting livré tel quel.</td></tr>
+            <tr><td><code>MemGraph.vue</code></td><td class="serif">Canvas SVG du mode Graphe. Compose useMemoryGraph + useArticleDnD + usePopover.</td></tr>
+            <tr><td><code>PisteCard.vue</code></td><td class="serif">Item cliquable dans l'index des pistes (rail gauche).</td></tr>
+            <tr><td><code>StreamItem.vue</code></td><td class="serif">Trace unique (note / article / event) avec annotation utilisateur.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Footer ============ -->
+  <footer class="cat-foot">
+    <div class="cat-foot__meta">
+      Catalogue généré à partir du fichier de production <code>Le Veilleur — Mémoire active.html</code>.
+      Toute modification visuelle est portée dans <code>design-system/</code> et validée ici avant intégration.
+    </div>
+    <div>v 1.0 · 2026</div>
+  </footer>
+
+</div>
+
+</body>
+</html>
