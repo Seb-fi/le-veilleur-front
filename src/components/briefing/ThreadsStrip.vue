@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type { Thread } from '../../api/briefing'
+import type { StripThread } from '../../stores/useThreadsStore'
 
-defineProps<{ threads: Thread[] }>()
+defineProps<{ threads: StripThread[] }>()
+const emit = defineEmits<{ select: [threadId: string] }>()
 
 function sparkPath(points: number[]): string {
   const w = 100, h = 28
@@ -34,9 +35,13 @@ const STATUS_COLORS: Record<string, string> = {
     <div class="threads-grid">
       <div
         v-for="(thread, i) in threads"
-        :key="thread.name"
+        :key="thread.threadId"
         class="thread"
         :class="{ 'thread--first': i === 0 }"
+        role="button"
+        tabindex="0"
+        @click="emit('select', thread.threadId)"
+        @keydown.enter="emit('select', thread.threadId)"
       >
         <div class="thread-status" :class="`thread-status--${thread.status}`">
           {{ thread.statusLabel }}

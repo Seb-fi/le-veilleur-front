@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useBriefingStore } from '../stores/useBriefingStore'
+import { useThreadsStore } from '../stores/useThreadsStore'
 import BriefingMasthead from '../components/briefing/BriefingMasthead.vue'
 import BriefingGreeting from '../components/briefing/BriefingGreeting.vue'
 import AudioPlayer from '../components/common/AudioPlayer.vue'
 import ThreadsStrip from '../components/briefing/ThreadsStrip.vue'
+import ThreadDetailDrawer from '../components/briefing/ThreadDetailDrawer.vue'
 import DossierCard from '../components/briefing/DossierCard.vue'
 import ArticleSecondCard from '../components/briefing/ArticleSecondCard.vue'
 import BrevesSection from '../components/briefing/BrevesSection.vue'
@@ -12,7 +14,11 @@ import FaiblesSection from '../components/briefing/FaiblesSection.vue'
 import PrevBriefings from '../components/briefing/PrevBriefings.vue'
 
 const store = useBriefingStore()
-onMounted(() => store.load())
+const threadsStore = useThreadsStore()
+onMounted(() => {
+  store.load()
+  threadsStore.load()
+})
 </script>
 
 <template>
@@ -43,7 +49,12 @@ onMounted(() => store.load())
         :filesize="store.data.audioSize"
       />
 
-      <ThreadsStrip :threads="store.data.threads" />
+      <!-- Fils réels (S2 /threads). Omis si vide/cold-start — jamais moqué en prod. -->
+      <ThreadsStrip
+        v-if="threadsStore.threads.length"
+        :threads="threadsStore.threads"
+        @select="threadsStore.openDetail"
+      />
 
       <!-- Dossier du jour -->
       <div class="kicker">
@@ -85,6 +96,12 @@ onMounted(() => store.load())
         </div>
       </footer>
     </div>
+
+    <ThreadDetailDrawer
+      :detail="threadsStore.detail"
+      :loading="threadsStore.detailLoading"
+      @close="threadsStore.closeDetail"
+    />
   </div>
 </template>
 
