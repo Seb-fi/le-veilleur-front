@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import logo from '@/assets/veilleur-mark.png'
 
 const props = defineProps<{
   edition: number
@@ -19,15 +20,18 @@ const editionLine = computed(() =>
 <template>
   <header class="masthead">
     <div class="mast-edition">{{ editionLine }}</div>
-    <div class="mast-title">Le <em>Veilleur</em></div>
+    <img class="mast-mark" :src="logo" alt="Le Veilleur" />
+    <div class="mast-title">Le Veilleur</div>
     <div class="mast-rule" />
-    <div class="mast-promise"><em>Rester à la pointe de votre domaine sans y consacrer votre temps.</em></div>
+    <div class="mast-promise">
+      <em>Rester à la pointe de votre domaine <span class="accent">sans y consacrer votre temps.</span></em>
+    </div>
   </header>
 </template>
 
 <style scoped>
 .masthead {
-  padding: 56px 0 28px;
+  padding: 48px 0 28px;
   border-bottom: 2px solid var(--color-ink);
   text-align: center;
 }
@@ -38,28 +42,29 @@ const editionLine = computed(() =>
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--color-ink-3);
-  margin-bottom: 18px;
+  margin-bottom: 20px;
+}
+
+.mast-mark {
+  width: 54px;
+  height: auto;
+  display: block;
+  margin: 0 auto 16px;
 }
 
 .mast-title {
   font-family: var(--font-serif);
-  font-size: 56px;
+  font-size: 48px;
   font-weight: var(--weight-medium);
-  letter-spacing: -0.024em;
+  letter-spacing: -0.01em;
   line-height: 1;
   color: var(--color-ink);
-}
-
-.mast-title em {
-  font-style: italic;
-  font-weight: var(--weight-regular);
-  color: var(--color-indigo);
 }
 
 .mast-rule {
   height: 1px;
   background: var(--color-ink);
-  margin: 14px auto 18px;
+  margin: 18px auto 18px;
   max-width: 120px;
 }
 
@@ -68,10 +73,15 @@ const editionLine = computed(() =>
   font-style: italic;
   font-size: 18px;
   color: var(--color-ink-2);
-  max-width: 50ch;
+  max-width: 52ch;
   margin: 0 auto;
   line-height: 1.4;
   letter-spacing: -0.005em;
   text-wrap: pretty;
+}
+
+.mast-promise .accent {
+  color: var(--color-amber);
+  font-style: italic;
 }
 </style>

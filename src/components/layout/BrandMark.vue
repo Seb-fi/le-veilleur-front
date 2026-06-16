@@ -1,24 +1,13 @@
 <script setup lang="ts">
+import logo from '@/assets/veilleur-mark.png'
+
 const day = new Intl.DateTimeFormat('fr-FR', { weekday: 'long' }).format(new Date())
 const dayLabel = day.charAt(0).toUpperCase() + day.slice(1)
 </script>
 
 <template>
   <div class="brand">
-    <svg class="brand-mark" viewBox="0 0 28 28" fill="none" aria-hidden="true">
-      <circle cx="14" cy="14" r="2.5" fill="oklch(38% .09 265)"/>
-      <circle cx="4" cy="6" r="1.6" fill="oklch(38% .09 265)" opacity=".7"/>
-      <circle cx="24" cy="8" r="1.6" fill="oklch(38% .09 265)" opacity=".7"/>
-      <circle cx="6" cy="22" r="1.6" fill="oklch(68% .12 75)"/>
-      <circle cx="22" cy="22" r="1.6" fill="oklch(38% .09 265)" opacity=".7"/>
-      <g stroke="oklch(38% .09 265)" stroke-width=".7" opacity=".55">
-        <line x1="14" y1="14" x2="4" y2="6"/>
-        <line x1="14" y1="14" x2="24" y2="8"/>
-        <line x1="14" y1="14" x2="6" y2="22"/>
-        <line x1="14" y1="14" x2="22" y2="22"/>
-        <line x1="4" y1="6" x2="24" y2="8" stroke-dasharray="1 2"/>
-      </g>
-    </svg>
+    <img class="brand-mark" :src="logo" alt="Le Veilleur" />
     <div>
       <div class="brand-title">Le Veilleur</div>
       <span class="brand-sub">Édition · {{ dayLabel }}</span>
@@ -29,18 +18,17 @@ const dayLabel = day.charAt(0).toUpperCase() + day.slice(1)
 <style scoped>
 .brand {
   display: flex;
-  align-items: baseline;
-  gap: 8px;
+  align-items: center;
+  gap: 11px;
   padding: 4px 8px 28px;
   border-bottom: var(--border-thin);
   margin-bottom: 20px;
 }
 
 .brand-mark {
-  width: 28px;
-  height: 28px;
+  width: 34px;
+  height: auto;
   flex: none;
-  transform: translateY(4px);
 }
 
 .brand-title {
