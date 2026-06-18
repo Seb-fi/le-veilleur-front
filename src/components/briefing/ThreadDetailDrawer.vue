@@ -1,34 +1,30 @@
 <script setup lang="ts">
-// Détail d'un fil (PRD threads §detail) : la trace — claims + articles sources.
-// Ouvert au clic sur un fil de la bande. Lecture seule.
-import type { ThreadDetail } from '../../api/threads'
+// Détail d'un fil CARVÉ (Phase 2) : la trace — articles sources servis en ligne par /threads/carved.
+// Ouvert au clic sur un fil de la bande de suivi. Lecture seule, aucun réseau.
+import type { CarvedFil } from '../../api/threads'
 
-defineProps<{ detail: ThreadDetail | null; loading: boolean }>()
+const props = defineProps<{ detail: CarvedFil | null }>()
 const emit = defineEmits<{ close: [] }>()
+
+function cohesionPct(c: number | null): string | null {
+  return c === null ? null : `${Math.round(c * 100)} %`
+}
+void props
 </script>
 
 <template>
   <Teleport to="body">
-    <div v-if="loading || detail" class="td-overlay" @click.self="emit('close')">
+    <div v-if="detail" class="td-overlay" @click.self="emit('close')">
       <aside class="td" role="dialog" aria-label="Détail du fil">
         <button class="td-close" aria-label="Fermer" @click="emit('close')">×</button>
 
-        <div v-if="loading" class="td-loading">Chargement du fil…</div>
-
-        <template v-else-if="detail">
-          <p class="td-eyebrow">{{ detail.status_label }}</p>
+        <template v-if="detail">
+          <p class="td-eyebrow">Fil suivi<template v-if="detail.anchor"> · {{ detail.anchor }}</template></p>
           <h2 class="td-name">{{ detail.name }}</h2>
           <p class="td-meta">
-            Suivi depuis <b>{{ detail.days_tracked }} j</b> ·
-            {{ detail.article_count }} articles · {{ detail.source_count }} sources
+            <b>{{ detail.source_count ?? detail.sources.length }}</b> sources
+            <template v-if="cohesionPct(detail.cohesion)"> · cohésion {{ cohesionPct(detail.cohesion) }}</template>
           </p>
-
-          <template v-if="detail.claims.length">
-            <p class="td-section">Ce qui se dit</p>
-            <ul class="td-claims">
-              <li v-for="(c, i) in detail.claims" :key="i">{{ c.claim_text }}</li>
-            </ul>
-          </template>
 
           <p class="td-section">Sources</p>
           <ul class="td-sources">

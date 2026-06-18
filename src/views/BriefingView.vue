@@ -9,10 +9,10 @@ import BriefingGreeting from '../components/briefing/BriefingGreeting.vue'
 import AudioPlayer from '../components/common/AudioPlayer.vue'
 import ThreadsStrip from '../components/briefing/ThreadsStrip.vue'
 import ThreadDetailDrawer from '../components/briefing/ThreadDetailDrawer.vue'
-import DossierCard from '../components/briefing/DossierCard.vue'
+import BriefingLeadCard from '../components/briefing/BriefingLeadCard.vue'
 import ArticleSecondCard from '../components/briefing/ArticleSecondCard.vue'
 import BrevesSection from '../components/briefing/BrevesSection.vue'
-import FaiblesSection from '../components/briefing/FaiblesSection.vue'
+import FrontieresVeille from '../components/briefing/FrontieresVeille.vue'
 import PrevBriefings from '../components/briefing/PrevBriefings.vue'
 
 const store = useBriefingStore()
@@ -63,7 +63,7 @@ function onListen(percent: number) {
         @listen="onListen"
       />
 
-      <!-- Fils réels (S2 /threads). Omis si vide/cold-start — jamais moqué en prod. -->
+      <!-- Fils CARVÉS gatés (Phase 2 : scoping A + gate de cohésion). Omis si vide/dégénéré. -->
       <ThreadsStrip
         v-if="threadsStore.threads.length"
         :threads="threadsStore.threads"
@@ -76,7 +76,7 @@ function onListen(percent: number) {
       </div>
 
       <div class="card-grid">
-        <DossierCard v-if="store.data.dossier" :dossier="store.data.dossier" />
+        <BriefingLeadCard v-if="store.data.dossier" :dossier="store.data.dossier" />
         <ArticleSecondCard
           v-for="article in store.data.alsoArticles"
           :key="article.id"
@@ -92,12 +92,12 @@ function onListen(percent: number) {
         <BrevesSection :breves="store.data.breves" />
       </template>
 
-      <!-- Signaux faibles · à la frontière (sérendipité réelle, omise si vide) -->
+      <!-- Découverte : aux frontières de votre veille (sérendipité ∉ champ, omise si vide). -->
       <template v-if="serendipityStore.items.length">
         <div class="kicker">
-          <span class="kicker-l">— Détection précoce · signaux faibles —</span>
+          <span class="kicker-l">— Aux frontières de votre veille —</span>
         </div>
-        <FaiblesSection :faibles="serendipityStore.items" />
+        <FrontieresVeille :faibles="serendipityStore.items" />
       </template>
 
       <!-- Briefings précédents -->
@@ -117,7 +117,6 @@ function onListen(percent: number) {
 
     <ThreadDetailDrawer
       :detail="threadsStore.detail"
-      :loading="threadsStore.detailLoading"
       @close="threadsStore.closeDetail"
     />
   </div>

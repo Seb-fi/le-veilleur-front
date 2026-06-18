@@ -5,7 +5,7 @@ import type { FaibleItem } from '../api/briefing'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 
-// FaiblesSection rend `body` en v-html → on échappe le contenu serveur et on ne
+// FrontieresVeille rend `body` en v-html → on échappe le contenu serveur et on ne
 // pose que nos propres balises <b> autour de l'ancre.
 function escapeHtml(s: string): string {
   return s

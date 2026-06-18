@@ -2,27 +2,14 @@
 import type { StripThread } from '../../stores/useThreadsStore'
 
 defineProps<{ threads: StripThread[] }>()
-const emit = defineEmits<{ select: [threadId: string] }>()
+const emit = defineEmits<{ select: [dossierId: string] }>()
 
-function sparkPath(points: number[]): string {
-  const w = 100, h = 28
-  const max = Math.max(...points)
-  const min = Math.min(...points)
-  const dx = w / (points.length - 1)
-  return points
-    .map((v, i) => {
-      const x = i * dx
-      const y = h - ((v - min) / Math.max(0.001, max - min)) * h
-      return `${i ? 'L' : 'M'}${x.toFixed(1)} ${y.toFixed(1)}`
-    })
-    .join(' ')
-}
-
-const STATUS_COLORS: Record<string, string> = {
-  shift:  'oklch(68% 0.12 75)',
-  rising: 'oklch(52% 0.075 155)',
-  deep:   'oklch(38% 0.09 265)',
-  steady: 'oklch(55% 0.008 270)',
+// Palier de cohésion → libellé + classe (gate de cohésion Phase 2 ; seuils miroir de cohesion_gate).
+function tier(cohesion: number | null): { label: string; cls: string } {
+  if (cohesion === null) return { label: 'cohésion n/a', cls: 'steady' }
+  if (cohesion >= 0.52) return { label: 'histoire serrée', cls: 'rising' }
+  if (cohesion <= 0.42) return { label: 'diffus', cls: 'shift' }
+  return { label: 'à surveiller', cls: 'deep' }
 }
 </script>
 
@@ -35,38 +22,22 @@ const STATUS_COLORS: Record<string, string> = {
     <div class="threads-grid">
       <div
         v-for="(thread, i) in threads"
-        :key="thread.threadId"
+        :key="thread.dossierId"
         class="thread"
         :class="{ 'thread--first': i === 0 }"
         role="button"
         tabindex="0"
-        @click="emit('select', thread.threadId)"
-        @keydown.enter="emit('select', thread.threadId)"
+        @click="emit('select', thread.dossierId)"
+        @keydown.enter="emit('select', thread.dossierId)"
       >
-        <div class="thread-status" :class="`thread-status--${thread.status}`">
-          {{ thread.statusLabel }}
+        <div class="thread-status" :class="`thread-status--${tier(thread.cohesion).cls}`">
+          {{ tier(thread.cohesion).label }}
         </div>
         <h4 class="thread-name">{{ thread.name }}</h4>
         <div class="thread-meta">
-          Suivi depuis <b>{{ thread.daysTracked }} jours</b> · {{ thread.articleCount }} articles
+          <span v-if="thread.anchor && thread.anchor !== thread.name">{{ thread.anchor }} · </span>
+          <b>{{ thread.sourceCount }}</b> source{{ thread.sourceCount > 1 ? 's' : '' }}
         </div>
-        <svg class="thread-spark" viewBox="0 0 100 28" preserveAspectRatio="none">
-          <path
-            :d="sparkPath(thread.sparkPoints)"
-            fill="none"
-            :stroke="STATUS_COLORS[thread.status]"
-            stroke-width="1.3"
-          />
-          <circle
-            :cx="100"
-            :cy="thread.sparkPoints[thread.sparkPoints.length - 1] !== undefined
-              ? 28 - ((thread.sparkPoints[thread.sparkPoints.length - 1] - Math.min(...thread.sparkPoints)) /
-                  Math.max(0.001, Math.max(...thread.sparkPoints) - Math.min(...thread.sparkPoints))) * 28
-              : 14"
-            r="2.5"
-            :fill="STATUS_COLORS[thread.status]"
-          />
-        </svg>
       </div>
     </div>
   </section>
@@ -165,18 +136,12 @@ const STATUS_COLORS: Record<string, string> = {
   font-size: 10px;
   color: var(--color-ink-4);
   letter-spacing: 0.04em;
+  margin-top: auto;
+  padding-top: 6px;
 }
 
 .thread-meta b {
   color: var(--color-ink-2);
   font-weight: var(--weight-medium);
-}
-
-.thread-spark {
-  width: 100%;
-  height: 28px;
-  display: block;
-  margin-top: auto;
-  padding-top: 6px;
 }
 </style>

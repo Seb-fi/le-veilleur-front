@@ -54,3 +54,31 @@ export function fetchThreads(k = 4): Promise<ThreadsEnvelope> {
 export function fetchThreadDetail(threadId: string): Promise<ThreadDetail> {
   return api.get<ThreadDetail>(`/threads/${encodeURIComponent(threadId)}`)
 }
+
+// Bandeau « ce que le système suit pour vous » alimenté par les fils CARVÉS gatés
+// (Phase 2, scoping A + gate de cohésion). Contrat = src/api/routes/threads.py:CarvedBandEnvelope.
+export interface CarvedFil {
+  dossier_id: string
+  anchor: string
+  column_label: string
+  name: string
+  source_count: number | null
+  burst: number | null
+  cohesion: number | null
+  cohesion_penalty: number | null
+  gated_score: number | null
+  is_emerging: boolean
+  sources: SourceOut[]
+}
+
+export interface CarvedBandEnvelope {
+  fils: CarvedFil[]
+  cold_start: boolean
+  degenerate: boolean
+  surveilled_count: number
+  note: string | null
+}
+
+export function fetchCarved(k = 4): Promise<CarvedBandEnvelope> {
+  return api.get<CarvedBandEnvelope>(`/threads/carved?k=${k}`)
+}
