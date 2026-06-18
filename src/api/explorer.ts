@@ -57,7 +57,7 @@ export interface ArticlesPage {
 }
 
 // ── Contrats backend (docs/openapi.json) ──────────────────────────────────────
-interface ArticleOut {
+export interface ArticleOut {
   id: string
   title: string
   summary: string
@@ -122,7 +122,7 @@ function humanizeLabel(label: string): string {
   return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''
 }
 
-function adaptArticle(a: ArticleOut): ExplorerArticle {
+export function adaptArticle(a: ArticleOut): ExplorerArticle {
   const primary = a.labels[0] ?? ''
   return {
     id: a.id,

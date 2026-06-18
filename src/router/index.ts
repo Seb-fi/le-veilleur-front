@@ -12,6 +12,7 @@ const router = createRouter({
     { path: '/locked',             component: () => import('../views/LockedView.vue') },
     { path: '/briefing',           component: () => import('../views/BriefingView.vue') },
     { path: '/explorer/articles',  component: () => import('../views/ArticlesView.vue') },
+    { path: '/explorer/articles/:id(.*)', component: () => import('../views/ArticleDetailView.vue') },
     { path: '/explorer/sujets',    component: () => import('../views/SujetsView.vue') },
     { path: '/explorer/carto',     component: () => import('../views/CartoView.vue') },
     { path: '/memoire',            component: () => import('../views/MemoireView.vue') },

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import SourceBadge from '../common/SourceBadge.vue'
 import type { ExplorerArticle } from '../../api/explorer'
 import { useFeedbackStore } from '../../stores/useFeedbackStore'
@@ -10,10 +11,19 @@ const props = defineProps<{ article: ExplorerArticle }>()
 // implicites source/related. Optimiste, idempotent.
 const feedback = useFeedbackStore()
 const fb = computed(() => feedback.get(props.article.id))
+
+const router = useRouter()
+function goDetail() {
+  router.push(`/explorer/articles/${encodeURIComponent(props.article.id)}`)
+}
+function goRelated() {
+  feedback.markImplicit(props.article.id, 'related_clicked')
+  router.push(`/explorer/articles/${encodeURIComponent(props.article.id)}?related=1`)
+}
 </script>
 
 <template>
-  <article class="article" :class="{ 'article--noimg': !article.img }">
+  <article class="article" :class="{ 'article--noimg': !article.img }" @click="goDetail">
     <div class="article-body">
       <div class="a-head">
         <SourceBadge :source="article.source" />
@@ -29,7 +39,7 @@ const fb = computed(() => feedback.get(props.article.id))
       <div class="article-foot">
         <span class="axis-badge" :class="article.axisClass">{{ article.axis }}</span>
 
-        <div class="score" tabindex="0">
+        <div class="score" tabindex="0" @click.stop>
           <span class="score-label">Pertinence</span>
           <div class="score-bar">
             <i :style="{ width: article.score * 100 + '%' }" />
@@ -42,7 +52,7 @@ const fb = computed(() => feedback.get(props.article.id))
           </div>
         </div>
 
-        <div class="actions">
+        <div class="actions" @click.stop>
           <button
             class="act"
             :class="{ on: fb.favorite }"
@@ -101,7 +111,7 @@ const fb = computed(() => feedback.get(props.article.id))
           target="_blank"
           rel="noopener"
           title="Ouvrir la source originale"
-          @click="feedback.markImplicit(article.id, 'source_clicked')"
+          @click.stop="feedback.markImplicit(article.id, 'source_clicked')"
         >
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M14 5h5v5M19 5l-9 9M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5" />
@@ -109,7 +119,7 @@ const fb = computed(() => feedback.get(props.article.id))
           Source originale
         </a>
         <span v-if="article.link" class="card-link-sep" />
-        <a class="card-link" href="#" title="Articles liés" @click.prevent="feedback.markImplicit(article.id, 'related_clicked')">
+        <a class="card-link" href="#" title="Articles liés" @click.stop.prevent="goRelated">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M10 14a4 4 0 0 1 0-5.7l2.8-2.8a4 4 0 1 1 5.7 5.7l-1.4 1.4M14 10a4 4 0 0 1 0 5.7l-2.8 2.8a4 4 0 1 1-5.7-5.7l1.4-1.4" />
           </svg>

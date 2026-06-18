@@ -27,6 +27,14 @@ test('l’onboarding ouvre l’entretien avec une amorce', async ({ page }) => {
   await expect(page.locator('.onb-msg--assistant').first()).toBeVisible()
 })
 
+test('cliquer un article de l’Explorer ouvre la vue détail', async ({ page }) => {
+  await page.goto('/#/explorer/articles')
+  await page.locator('.article').first().click()
+  await expect(page).toHaveURL(/#\/explorer\/articles\/.+/)
+  await expect(page.locator('.adv-title')).toBeVisible()
+  await expect(page.getByText(/Articles liés/)).toBeVisible()
+})
+
 test('le feedback « Pertinent » est un toggle réversible (état optimiste)', async ({ page }) => {
   await page.goto('/#/explorer/articles')
   const relevant = page.locator('.article').first().getByTitle('Pertinent')

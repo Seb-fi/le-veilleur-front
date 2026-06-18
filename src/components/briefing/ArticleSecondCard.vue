@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import SourceBadge from '../common/SourceBadge.vue'
 import ScoreBadge from '../common/ScoreBadge.vue'
 import type { BriefingArticle } from '../../api/briefing'
@@ -10,10 +11,19 @@ const props = defineProps<{ article: BriefingArticle }>()
 // Feedback explicite sur les cartes secondaires du briefing (docs/feedback_design.md).
 const feedback = useFeedbackStore()
 const fb = computed(() => feedback.get(props.article.id))
+
+const router = useRouter()
+function goDetail() {
+  router.push(`/explorer/articles/${encodeURIComponent(props.article.id)}`)
+}
+function goRelated() {
+  feedback.markImplicit(props.article.id, 'related_clicked')
+  router.push(`/explorer/articles/${encodeURIComponent(props.article.id)}?related=1`)
+}
 </script>
 
 <template>
-  <article class="acard">
+  <article class="acard" @click="goDetail">
     <div v-if="article.img" class="acard-thumb">
       <img :src="article.img" loading="lazy" alt="" />
     </div>
@@ -31,7 +41,7 @@ const fb = computed(() => feedback.get(props.article.id))
       <span class="badge" :class="article.axisClass">{{ article.axis }}</span>
       <ScoreBadge :score="article.score" :why="article.why" :compact="true" />
 
-      <div class="actions">
+      <div class="actions" @click.stop>
         <button
           class="act"
           :class="{ on: fb.favorite }"
@@ -76,7 +86,7 @@ const fb = computed(() => feedback.get(props.article.id))
         :href="article.link"
         target="_blank"
         rel="noopener"
-        @click="feedback.markImplicit(article.id, 'source_clicked')"
+        @click.stop="feedback.markImplicit(article.id, 'source_clicked')"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M14 5h5v5M19 5l-9 9M11 5H6a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2v-5"/>
@@ -84,7 +94,7 @@ const fb = computed(() => feedback.get(props.article.id))
         Source originale
       </a>
       <span v-if="article.link" class="card-link-sep" />
-      <a class="card-link" href="#" @click.prevent="feedback.markImplicit(article.id, 'related_clicked')">
+      <a class="card-link" href="#" @click.stop.prevent="goRelated">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M10 14a4 4 0 0 1 0-5.7l2.8-2.8a4 4 0 1 1 5.7 5.7l-1.4 1.4M14 10a4 4 0 0 1 0 5.7l-2.8 2.8a4 4 0 1 1-5.7-5.7l1.4-1.4"/>
         </svg>
