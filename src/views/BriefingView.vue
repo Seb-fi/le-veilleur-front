@@ -79,6 +79,11 @@ function onListen(percent: number) {
       <div v-if="store.data.dossier" class="kicker">
         <span class="kicker-l">— Pourquoi ce sujet aujourd'hui —</span>
       </div>
+      <!-- Sinon, en-tête propre pour la sélection : sépare les articles du bandeau au-dessus
+           (sans dossier ni bandeau plein, le bloc paraissait fusionné). -->
+      <div v-else-if="store.data.alsoArticles.length" class="kicker">
+        <span class="kicker-l">— Sélectionnés pour vous —</span>
+      </div>
 
       <div class="card-grid">
         <BriefingLeadCard v-if="store.data.dossier" :dossier="store.data.dossier" />
