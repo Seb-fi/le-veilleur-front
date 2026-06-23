@@ -47,5 +47,5 @@ export const useSerendipityStore = defineStore('serendipity', () => {
     }
   }
 
-  return { items, load }
+  return { items, loaded, load }
 })

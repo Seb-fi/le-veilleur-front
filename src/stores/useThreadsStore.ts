@@ -75,5 +75,5 @@ export const useThreadsStore = defineStore('threads', () => {
     detail.value = null
   }
 
-  return { threads, note, detail, load, openDetail, closeDetail }
+  return { threads, note, loaded, detail, load, openDetail, closeDetail }
 })

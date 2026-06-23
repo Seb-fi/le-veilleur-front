@@ -63,12 +63,17 @@ function onListen(percent: number) {
         @listen="onListen"
       />
 
-      <!-- Fils CARVÉS gatés (Phase 2 : scoping A + gate de cohésion). Omis si vide/dégénéré. -->
+      <!-- Fils CARVÉS gatés (Phase 2 : scoping A + gate de cohésion). État vide honnête
+           (isolation domaine §4.C : rien dans le champ ≠ dump global) plutôt que disparition. -->
       <ThreadsStrip
         v-if="threadsStore.threads.length"
         :threads="threadsStore.threads"
         @select="threadsStore.openDetail"
       />
+      <div v-else-if="threadsStore.loaded" class="empty-block">
+        <div class="kicker"><span class="kicker-l">— Ce que le système suit pour vous —</span></div>
+        <p class="empty-note">Rien n'émerge dans votre champ pour l'instant.</p>
+      </div>
 
       <!-- Dossier du jour — carte omise tant que l'endpoint éditorial S1 n'existe pas. -->
       <div v-if="store.data.dossier" class="kicker">
@@ -92,13 +97,18 @@ function onListen(percent: number) {
         <BrevesSection :breves="store.data.breves" />
       </template>
 
-      <!-- Découverte : aux frontières de votre veille (sérendipité ∉ champ, omise si vide). -->
+      <!-- Découverte : aux frontières de votre veille. État vide honnête si rien n'est ponté
+           à votre champ (sérendipité ∉ champ) plutôt que disparition silencieuse. -->
       <template v-if="serendipityStore.items.length">
         <div class="kicker">
           <span class="kicker-l">— Aux frontières de votre veille —</span>
         </div>
         <FrontieresVeille :faibles="serendipityStore.items" />
       </template>
+      <div v-else-if="serendipityStore.loaded" class="empty-block">
+        <div class="kicker"><span class="kicker-l">— Aux frontières de votre veille —</span></div>
+        <p class="empty-note">Rien de neuf ponté à votre champ aujourd'hui.</p>
+      </div>
 
       <!-- Briefings précédents -->
       <div class="kicker" style="margin-top: 64px">
@@ -169,6 +179,14 @@ function onListen(percent: number) {
 .kicker-l {
   color: var(--color-indigo);
   font-weight: var(--weight-medium);
+}
+
+.empty-note {
+  text-align: center;
+  color: var(--color-ink-3);
+  font-size: 13px;
+  font-style: italic;
+  margin: -12px 0 0;
 }
 
 .card-grid {
