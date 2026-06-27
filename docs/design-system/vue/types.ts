@@ -2,158 +2,85 @@
  * Le Veilleur — Design System
  * vue/types.ts
  *
- * Types métier pour la "Mémoire active". Reflètent la
- * spécification produit : pistes, traces (articles/notes/évènements),
- * et liens entre pistes.
+ * Types métier de la « Mémoire active » (MVP refondu : favori · piste · note ·
+ * favori↔piste). Aligné sur PRD_memoire_active_front.md §8. Les anciens types
+ * (PisteStatus, DomainEvent, Graph*, Drop*, Trace, EventId…) ont été retirés
+ * avec l'ancienne section (graphe / statut / events).
  *
- * Ces types sont volontairement minces — les vrais modèles backend
- * porteront davantage de méta (auteur, scoring, embeddings, …).
- * Ici on ne capture que ce qui est nécessaire pour le rendu.
+ * Référence pour la doc DS ; le code applicatif importe depuis `src/types`.
  */
 
 // ---------------------------------------------------------------
 // Identifiants opaques — éviter les confusions entre IDs
 // ---------------------------------------------------------------
-export type PisteId   = string & { readonly __brand: "PisteId" };
-export type ArticleId = string & { readonly __brand: "ArticleId" };
-export type NoteId    = string & { readonly __brand: "NoteId" };
-export type EventId   = string & { readonly __brand: "EventId" };
+export type PisteId = string & { readonly __brand: 'PisteId' }
+export type NoteId = string & { readonly __brand: 'NoteId' }
+export type ArticleId = string & { readonly __brand: 'ArticleId' }
 
 // ---------------------------------------------------------------
-// Piste — un fil de pensée que l'utilisateur suit dans le temps
+// Couleur de piste — token mappé sur var(--color-{couleur})
 // ---------------------------------------------------------------
-export type PisteStatus = "active" | "dormant" | "emerging" | "tension";
+export type PisteColor = 'indigo' | 'moss' | 'amber' | 'rose' | 'steel'
 
+// ---------------------------------------------------------------
+// Favori — article sauvegardé, associable à 0..n pistes
+// ---------------------------------------------------------------
+export interface Favori {
+  articleId: ArticleId
+  titre: string
+  source: string
+  date: string
+  lien: string
+  extrait: string
+  /** Associations many-to-many (source de vérité du lien). */
+  pisteIds: PisteId[]
+  hasNotes: boolean
+}
+
+// ---------------------------------------------------------------
+// Piste — axe de recherche rédigé par l'utilisateur
+// ---------------------------------------------------------------
 export interface Piste {
-  id: PisteId;
-  title: string;
-  /** Sous-titre : "axe · IA agents", "axe · régulation", etc. */
-  axis?: string;
-  /** Tags libres (par ex. "tension active", "12 jours") */
-  tags?: string[];
-  status: PisteStatus;
-  /** Auteur de la piste : `user` (vous) ou `system` (détectée) */
-  origin: "user" | "system";
-  /** Date d'ouverture ISO. */
-  openedAt: string;
-  /** Nombre de traces (calculé côté backend). */
-  traceCount: number;
-  /** Liaisons explicites vers d'autres pistes. */
-  linkedPisteIds?: PisteId[];
-  /** ID de la note épinglée centrale, si elle existe. */
-  pinnedNoteId?: NoteId;
-  /** Position semi-stable dans le graphe (computed/persisted). */
-  graphPosition?: { x: number; y: number };
+  id: PisteId
+  nom: string
+  couleur: PisteColor
+  descriptif: string
+  favoriCount: number
 }
 
 // ---------------------------------------------------------------
-// Article — article sauvegardé en favoris
-// ---------------------------------------------------------------
-export interface Article {
-  id: ArticleId;
-  title: string;
-  source: string;
-  publishedAt?: string;
-  savedAt: string;
-  /** Pistes auxquelles l'article est rattaché (0..n). */
-  pisteIds: PisteId[];
-  /** Note utilisateur attachée à l'article ("votre angle"). */
-  userNote?: string;
-  /** URL d'origine. */
-  url?: string;
-}
-
-// ---------------------------------------------------------------
-// Note — réflexion personnelle, libre ou rattachée
+// Note — polymorphe : cible un favori (kind='fav') ou une piste (kind='piste')
 // ---------------------------------------------------------------
 export interface Note {
-  id: NoteId;
-  body: string;
-  createdAt: string;
-  updatedAt?: string;
-  /** Piste de rattachement. */
-  pisteId?: PisteId;
-  /** Entité de rattachement (article ou évènement). */
-  attachedTo?:
-    | { type: "article"; id: ArticleId }
-    | { type: "event";   id: EventId };
-  /** Note épinglée (centerpiece de sa piste). */
-  pinned: boolean;
+  id: NoteId
+  kind: 'fav' | 'piste'
+  /** article_id si kind==='fav', piste_id si kind==='piste'. */
+  targetId: string
+  texte: string
+  createdAt: string
+  updatedAt: string
+  /** Pistes dérivées (jamais stockées) — présent seulement si kind==='fav'. */
+  derivedPisteIds?: PisteId[]
 }
 
 // ---------------------------------------------------------------
-// Évènement — fait externe daté
+// Aperçu vivant — descriptif → résultats (retrieval back-end)
 // ---------------------------------------------------------------
-export type EventKind = "announce" | "regulatory" | "release" | "geopolitical";
+export type ApercuState = 'AUCUNE_SOURCE' | 'SIGNAL_FAIBLE' | 'SIGNAL_NET'
 
-export interface DomainEvent {
-  id: EventId;
-  name: string;
-  kind: EventKind;
-  occurredAt: string;
-  source?: string;
-  /** Pistes auxquelles l'évènement est rattaché. */
-  pisteIds: PisteId[];
+export interface ApercuResult {
+  articleId: ArticleId
+  titre: string
+  source: string
+  date: string
+  score: number
 }
 
-// ---------------------------------------------------------------
-// Traces — union pour le stream chronologique
-// ---------------------------------------------------------------
-export type TraceKind = "note" | "article" | "event";
-
-export type Trace =
-  | (Note         & { kind: "note" })
-  | (Article      & { kind: "article" })
-  | (DomainEvent  & { kind: "event" });
-
-// ---------------------------------------------------------------
-// Graph — modèle dérivé pour le rendu
-// ---------------------------------------------------------------
-export type GraphEdgeKind = "user" | "implicit" | "system";
-
-export interface GraphEdge {
-  fromPisteId: PisteId;
-  toPisteId:   PisteId;
-  kind: GraphEdgeKind;
-  /** Score de proximité (0..1) — facultatif. */
-  weight?: number;
+export interface Apercu {
+  /** score >= preview_floor ; [] possible. */
+  results: ApercuResult[]
+  /** seule entrée de la jauge. */
+  state: ApercuState
+  /** dispersion = observabilité uniquement. */
+  scoreStats: { n: number; top: number; mean: number; dispersion: number }
 }
-
-export interface GraphSatellite {
-  /** ID de l'entité (article, note, event). */
-  id: string;
-  kind: TraceKind;
-  label: string;
-  meta?: string;
-  /** Position calculée (cluster-relative). */
-  x: number;
-  y: number;
-  pinned?: boolean;
-}
-
-export interface GraphCluster {
-  piste: Piste;
-  satellites: GraphSatellite[];
-}
-
-// ---------------------------------------------------------------
-// Drag & drop — décision de l'utilisateur
-// ---------------------------------------------------------------
-export type DropDecision = "move" | "link" | "cancel";
-
-export interface PendingDrop {
-  articleId: ArticleId;
-  sourcePisteId: PisteId | null;
-  targetPisteId: PisteId;
-}
-
-// ---------------------------------------------------------------
-// Popover — état générique
-// ---------------------------------------------------------------
-export interface PopoverPosition { x: number; y: number; }
-
-export type PopoverContext =
-  | { type: "empty";   svgPoint: { x: number; y: number } }
-  | { type: "entity";  entityKind: "article" | "event"; entityId: string; label: string }
-  | { type: "note";    noteId: NoteId; label: string }
-  | { type: "picker";  pisteId: PisteId };

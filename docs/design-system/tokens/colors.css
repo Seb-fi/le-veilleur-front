@@ -23,6 +23,7 @@
   --color-ink-2:        oklch(35% 0.010 260);  /* texte secondaire         */
   --color-ink-3:        oklch(55% 0.008 270);  /* meta, labels             */
   --color-ink-4:        oklch(72% 0.006 270);  /* murmures, dividers forts */
+  --color-ink-5:        oklch(83% 0.005 270);  /* dividers les plus doux   */
 
   /* ------------------------------------------------------------
    * Rules — séparateurs
@@ -40,12 +41,16 @@
 
   --color-amber:        oklch(64% 0.150 65);  /* pin / évènement         */
   --color-amber-tint:   oklch(96% 0.025 80);  /* fond pin léger          */
+  --color-amber-tint2:  oklch(92% 0.045 78);  /* surfaces mineures ambre */
 
   --color-moss:         oklch(52% 0.075 155); /* succès / convergence    */
   --color-moss-tint:    oklch(94% 0.025 155);
 
   --color-rose:         oklch(56% 0.110 25);  /* warning / tension       */
   --color-rose-tint:    oklch(95% 0.030 25);
+
+  --color-steel:        oklch(50% 0.045 250); /* accent piste · sobre    */
+  --color-steel-tint:   oklch(93% 0.018 250);
 
   /* ------------------------------------------------------------
    * Sémantique de domaine — réservé "Mémoire active"
