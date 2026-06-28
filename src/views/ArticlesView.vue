@@ -36,6 +36,17 @@ onMounted(() => store.loadArticles())
           Aucun article ne correspond à cette recherche.
         </div>
       </div>
+
+      <div v-if="store.hasMore && store.filteredArticles.length" class="load-more">
+        <button
+          type="button"
+          class="load-more-btn"
+          :disabled="store.loadingMore"
+          @click="store.loadMoreArticles()"
+        >
+          {{ store.loadingMore ? 'Chargement…' : 'Charger plus d’articles' }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
@@ -79,5 +90,36 @@ onMounted(() => store.loadArticles())
   color: var(--color-ink-4);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+.load-more {
+  display: flex;
+  justify-content: center;
+  padding: 28px 0 8px;
+}
+
+.load-more-btn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-2);
+  background: var(--color-paper);
+  border: 1px solid var(--color-rule);
+  border-radius: var(--radius-md);
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background var(--motion-quick) var(--ease-out),
+              color var(--motion-quick) var(--ease-out);
+}
+
+.load-more-btn:hover {
+  background: var(--color-bg-2);
+  color: var(--color-ink);
+}
+
+.load-more-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 </style>

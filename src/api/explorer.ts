@@ -165,20 +165,22 @@ function adaptTopic(t: TopicOut, trend: number[] = []): Topic {
   }
 }
 
+// Pagination serveur (limit/offset) : le corpus fait ~17k articles — tout charger renvoyait
+// 27 Mo et figeait le rendu. `sort` mappé vers l'enum back (score|date) ; `q` = recherche
+// plein-texte côté SQL. `total` = nombre de lignes de CETTE page (sert à déduire `hasMore`).
 export function fetchArticles(params?: {
-  axis?: string
   sort?: string
   q?: string
-  page?: number
+  limit?: number
+  offset?: number
 }): Promise<ArticlesPage> {
   const qs = new URLSearchParams()
-  if (params?.axis) qs.set('axis', params.axis)
   if (params?.sort) qs.set('sort', params.sort)
   if (params?.q) qs.set('q', params.q)
-  if (params?.page) qs.set('page', String(params.page))
-  const query = qs.toString()
+  qs.set('limit', String(params?.limit ?? 60))
+  if (params?.offset) qs.set('offset', String(params.offset))
   return api
-    .get<ArticleOut[]>(`/articles${query ? '?' + query : ''}`)
+    .get<ArticleOut[]>(`/articles?${qs.toString()}`)
     .then((rows) => ({ articles: rows.map(adaptArticle), total: rows.length }))
 }
 
