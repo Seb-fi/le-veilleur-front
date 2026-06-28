@@ -27,6 +27,17 @@ export interface Piste {
   favoriCount: number
 }
 
+// Ancre d'un commentaire de sélection (PRD §3, gate (a)/(b)). Optionnelle : une note
+// d'article simple a `anchor` nul ; un commentaire ancré porte `anchor` non nul + kind='fav'.
+// Mono-paragraphe au MVP. On stocke le brut (texte de l'article), jamais aucun dérivé.
+export interface NoteAnchor {
+  quote: string
+  offset: number
+  mode: 'resume' | 'full'
+  paragraphText: string
+  paragraphIndex: number
+}
+
 export interface Note {
   id: NoteId
   kind: 'fav' | 'piste'
@@ -35,6 +46,7 @@ export interface Note {
   createdAt: string
   updatedAt: string
   derivedPisteIds?: PisteId[] // présent seulement si kind==='fav' (dérivé back)
+  anchor?: NoteAnchor // présent seulement pour un commentaire de sélection (PRD §3)
 }
 
 export type ApercuState = 'AUCUNE_SOURCE' | 'SIGNAL_FAIBLE' | 'SIGNAL_NET'

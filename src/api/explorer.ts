@@ -70,6 +70,12 @@ export interface ArticleOut {
   trending: boolean
   related_ids: string[]
   thesis_fr?: string | null
+  // Déjà émis par le back mais jusqu'ici jetés par le contrat front (PRD §8.1) :
+  is_argumentative?: boolean | null
+  contradiction_ids?: string[] | null
+  contradiction_scores?: number[] | null
+  // Addition back P0 (PRD §8.2 / §9.2, gate f1) : texte intégral nettoyé.
+  full_text?: string | null
   link?: string | null
   thumbnail_url?: string | null
   thumbnail_path?: string | null

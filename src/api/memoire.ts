@@ -4,7 +4,7 @@
 
 import { api } from './client'
 import type {
-  Favori, Piste, PisteId, PisteColor, Note, NoteId, ArticleId, Apercu, ApercuState,
+  Favori, Piste, PisteId, PisteColor, Note, NoteId, NoteAnchor, ArticleId, Apercu, ApercuState,
 } from '../types'
 
 // ----------------------------------------------------------------------------
@@ -35,6 +35,14 @@ interface PisteDetailDTO {
   favoris: { article_id: string; titre: string; source: string; date: string }[]
   notes: { id: string; texte: string; created_at: string; updated_at: string }[]
 }
+// Ancre wire (snake_case) — miroir du contrat back §9.1.
+interface NoteAnchorDTO {
+  quote: string
+  offset: number
+  mode: 'resume' | 'full'
+  paragraph_text: string
+  paragraph_index: number
+}
 interface NoteDTO {
   id: string
   kind: 'fav' | 'piste'
@@ -43,6 +51,7 @@ interface NoteDTO {
   created_at: string
   updated_at: string
   derived_piste_ids?: string[]
+  anchor?: NoteAnchorDTO | null
 }
 interface ApercuDTO {
   results: { article_id: string; titre: string; source: string; date: string; score: number }[]
@@ -74,6 +83,24 @@ function toPiste(d: PisteListDTO): Piste {
     favoriCount: d.favori_count,
   }
 }
+function toNoteAnchor(a: NoteAnchorDTO): NoteAnchor {
+  return {
+    quote: a.quote,
+    offset: a.offset,
+    mode: a.mode,
+    paragraphText: a.paragraph_text,
+    paragraphIndex: a.paragraph_index,
+  }
+}
+function fromNoteAnchor(a: NoteAnchor): NoteAnchorDTO {
+  return {
+    quote: a.quote,
+    offset: a.offset,
+    mode: a.mode,
+    paragraph_text: a.paragraphText,
+    paragraph_index: a.paragraphIndex,
+  }
+}
 function toNote(d: NoteDTO): Note {
   return {
     id: d.id as NoteId,
@@ -83,6 +110,7 @@ function toNote(d: NoteDTO): Note {
     createdAt: d.created_at,
     updatedAt: d.updated_at,
     derivedPisteIds: d.derived_piste_ids as PisteId[] | undefined,
+    anchor: d.anchor ? toNoteAnchor(d.anchor) : undefined,
   }
 }
 function toApercu(d: ApercuDTO): Apercu {
@@ -196,11 +224,14 @@ export async function createNote(input: {
   kind: 'fav' | 'piste'
   targetId: string
   texte: string
+  anchor?: NoteAnchor
 }): Promise<Note> {
   const d = await api.post<NoteDTO>('/memoire/notes', {
     kind: input.kind,
     target_id: input.targetId,
     texte: input.texte,
+    // L'ancre n'est envoyée que si présente (commentaire de sélection, PRD §9.1).
+    ...(input.anchor ? { anchor: fromNoteAnchor(input.anchor) } : {}),
   })
   return toNote(d)
 }

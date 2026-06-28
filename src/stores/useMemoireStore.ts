@@ -1,7 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import type {
-  Favori, Piste, PisteId, PisteColor, Note, NoteId, ArticleId, Apercu,
+  Favori, Piste, PisteId, PisteColor, Note, NoteId, NoteAnchor, ArticleId, Apercu,
 } from '../types'
 import * as memoireApi from '../api/memoire'
 
@@ -69,6 +69,24 @@ export const useMemoireStore = defineStore('memoire', () => {
 
   function favoriById(id: ArticleId): Favori | undefined {
     return favorites.value.find((f) => f.articleId === id)
+  }
+
+  // Garantit une entrée favori locale pour un article (page détail) : sans elle, l'association
+  // à une piste n'a aucune cible (l'association passe par favori↔piste, invariant #3). Côté back,
+  // l'association crée le favori si besoin ; côté store on aligne l'état optimiste. Idempotent.
+  function ensureFavori(meta: {
+    articleId: ArticleId
+    titre: string
+    source: string
+    date: string
+    lien: string
+    extrait: string
+  }): Favori {
+    const existing = favoriById(meta.articleId)
+    if (existing) return existing
+    const fav: Favori = { ...meta, pisteIds: [], hasNotes: false }
+    favorites.value = [fav, ...favorites.value]
+    return fav
   }
 
   /** Pistes dérivées d'une note d'article (via l'association du favori cible). */
@@ -212,21 +230,37 @@ export const useMemoireStore = defineStore('memoire', () => {
   }
 
   // ---- Notes : édition / suppression (création hors onglet Notes) -----------
-  async function addNote(kind: 'fav' | 'piste', targetId: string, texte: string) {
+  // `anchor` non nul = commentaire de sélection ancré (PRD §3) ; nul = note d'article simple.
+  // Retourne la note créée (l'appelant — page détail — focalise la carte de marge).
+  async function addNote(
+    kind: 'fav' | 'piste',
+    targetId: string,
+    texte: string,
+    anchor?: NoteAnchor,
+  ): Promise<Note> {
+    let created: Note
     if (USE_MOCK) {
       const id = `n-new-${++mockSeq}` as NoteId
-      notes.value = [
-        { id, kind, targetId, texte, createdAt: nowIso(), updatedAt: nowIso() },
-        ...notes.value,
-      ]
+      created = { id, kind, targetId, texte, createdAt: nowIso(), updatedAt: nowIso(), anchor }
+      notes.value = [created, ...notes.value]
     } else {
-      const created = await memoireApi.createNote({ kind, targetId, texte })
+      created = await memoireApi.createNote({ kind, targetId, texte, anchor })
       notes.value = [created, ...notes.value]
     }
     if (kind === 'fav') {
       const fav = favoriById(targetId as ArticleId)
       if (fav) fav.hasNotes = true
     }
+    return created
+  }
+
+  // ---- Notes d'un article (page détail) -------------------------------------
+  // Notes simples = anchor nul ; commentaires de sélection = anchor non nul.
+  function articleNotes(articleId: ArticleId): Note[] {
+    return notes.value.filter((n) => n.kind === 'fav' && n.targetId === articleId && !n.anchor)
+  }
+  function articleComments(articleId: ArticleId): Note[] {
+    return notes.value.filter((n) => n.kind === 'fav' && n.targetId === articleId && !!n.anchor)
   }
 
   async function updateNote(id: NoteId, texte: string) {
@@ -281,7 +315,8 @@ export const useMemoireStore = defineStore('memoire', () => {
     toastMessage,
     // dérivés
     favoriCounts, unassignedCount, currentPiste, filteredFavorites,
-    favorisOf, pisteById, favoriById, derivedPistesOfNote,
+    favorisOf, pisteById, favoriById, ensureFavori, derivedPistesOfNote,
+    articleNotes, articleComments,
     // actions
     load, toast,
     goFavoris, goPistes, goNotes, openFiche, openComposer,
