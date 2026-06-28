@@ -5,6 +5,8 @@ import {
   postListen,
   type ArticleFeedbackType,
 } from '../api/feedback'
+import { createFavorite, deleteFavorite } from '../api/memoire'
+import type { ArticleId } from '../types'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}/
@@ -39,7 +41,13 @@ export const useFeedbackStore = defineStore('feedback', () => {
     const cur = get(id)
     const favorite = !cur.favorite
     state.value[id] = { ...cur, favorite }
-    if (favorite) send(id, 'favorite', briefingDate) // pas d'événement d'« unfavorite »
+    if (favorite) send(id, 'favorite', briefingDate) // signal de scoring (pas d'« unfavorite »)
+    // Bibliothèque Mémoire active : le favori est un objet persistant (table `user_favorites`),
+    // distinct du signal de feedback. Toggle réel : ajout/retrait. Best-effort.
+    if (!USE_MOCK) {
+      const aid = id as ArticleId
+      ;(favorite ? createFavorite(aid) : deleteFavorite(aid)).catch(() => {})
+    }
   }
 
   // Tri-état mutuellement exclusif : re-cliquer l'opinion active l'efface (local only).

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useMemoireStore } from '../../stores/useMemoireStore'
+import { useOpenArticle } from '../../composables/useOpenArticle'
 import type { Apercu, Note, ArticleId } from '../../types'
 import ApercuList from './ApercuList.vue'
 import AssociateFavoriPopover from './AssociateFavoriPopover.vue'
@@ -8,6 +9,7 @@ import MemNoteLine from './MemNoteLine.vue'
 import MemIcon from './MemIcon.vue'
 
 const store = useMemoireStore()
+const openArticle = useOpenArticle()
 
 const apercu = ref<Apercu | null>(null)
 const apercuLoading = ref(false)
@@ -98,7 +100,13 @@ async function submitNote() {
         </div>
         <ul class="b-favs">
           <li v-for="f in associatedFavoris" :key="f.articleId" class="b-fav">
-            <div class="b-fav-body">
+            <div
+              class="b-fav-body"
+              role="link"
+              tabindex="0"
+              @click="openArticle(f.articleId)"
+              @keydown.enter="openArticle(f.articleId)"
+            >
               <div class="b-fav-title">{{ f.titre }}</div>
               <div class="b-fav-source">{{ f.source }} · {{ f.date }}</div>
             </div>
@@ -292,6 +300,14 @@ async function submitNote() {
 .b-fav-body {
   flex: 1;
   min-width: 0;
+  cursor: pointer;
+}
+.b-fav-body:hover .b-fav-title {
+  color: var(--color-indigo);
+}
+.b-fav-body:focus-visible {
+  outline: 2px solid var(--color-indigo-tint);
+  border-radius: var(--radius-sm);
 }
 .b-fav-title {
   font-family: var(--font-serif);

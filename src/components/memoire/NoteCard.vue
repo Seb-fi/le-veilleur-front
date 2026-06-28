@@ -3,10 +3,12 @@ import { computed, ref } from 'vue'
 import type { Note, PisteId } from '../../types'
 import { useMemoireStore } from '../../stores/useMemoireStore'
 import { useAutosize } from '../../composables/useAutosize'
+import { useOpenArticle } from '../../composables/useOpenArticle'
 import MemIcon from './MemIcon.vue'
 
 const props = defineProps<{ note: Note }>()
 const store = useMemoireStore()
+const openArticle = useOpenArticle()
 
 const ta = ref<HTMLTextAreaElement | null>(null)
 const draft = ref(props.note.texte)
@@ -61,7 +63,14 @@ function openArticlePiste(id: PisteId) {
       @blur="commit"
     />
 
-    <div v-if="isFav && article" class="nc-article" role="link" tabindex="0">
+    <div
+      v-if="isFav && article"
+      class="nc-article"
+      role="link"
+      tabindex="0"
+      @click="openArticle(note.targetId)"
+      @keydown.enter="openArticle(note.targetId)"
+    >
       <MemIcon name="article" :size="13" />
       <div class="nc-article-body">
         <div class="nc-article-title">{{ article.titre }}</div>

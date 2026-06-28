@@ -102,7 +102,8 @@ export const useMemoireStore = defineStore('memoire', () => {
 
   // ---- Chargement -----------------------------------------------------------
   async function load() {
-    if (loaded.value) return
+    // Pas de court-circuit sur `loaded` : on re-fetche à chaque ouverture de la section
+    // pour refléter les favoris ajoutés ailleurs (briefing, page article) entre-temps.
     loading.value = true
     try {
       if (USE_MOCK) {

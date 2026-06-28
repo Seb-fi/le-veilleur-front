@@ -2,12 +2,14 @@
 import { computed, ref } from 'vue'
 import type { Favori, Note, PisteId } from '../../types'
 import { useMemoireStore } from '../../stores/useMemoireStore'
+import { useOpenArticle } from '../../composables/useOpenArticle'
 import AssociatePopover from './AssociatePopover.vue'
 import MemNoteLine from './MemNoteLine.vue'
 import MemIcon from './MemIcon.vue'
 
 const props = defineProps<{ favori: Favori }>()
 const store = useMemoireStore()
+const openArticle = useOpenArticle()
 
 const popOpen = ref(false)
 const adding = ref(false)
@@ -51,7 +53,15 @@ async function submitNote() {
       <span class="fav-dot">·</span>
       <span class="fav-date">{{ favori.date }}</span>
     </div>
-    <h3 class="fav-title">{{ favori.titre }}</h3>
+    <h3
+      class="fav-title"
+      role="link"
+      tabindex="0"
+      @click="openArticle(favori.articleId)"
+      @keydown.enter="openArticle(favori.articleId)"
+    >
+      {{ favori.titre }}
+    </h3>
     <p class="fav-extrait">{{ favori.extrait }}</p>
 
     <div class="fav-pistes">
@@ -150,6 +160,14 @@ async function submitNote() {
   color: var(--color-ink);
   margin: 6px 0 6px;
   font-weight: var(--weight-regular);
+  cursor: pointer;
+}
+.fav-title:hover {
+  color: var(--color-indigo);
+}
+.fav-title:focus-visible {
+  outline: 2px solid var(--color-indigo-tint);
+  border-radius: var(--radius-sm);
 }
 .fav-extrait {
   font-size: 12.5px;

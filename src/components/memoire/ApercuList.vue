@@ -1,21 +1,34 @@
 <script setup lang="ts">
 import type { Apercu } from '../../types'
+import { useOpenArticle } from '../../composables/useOpenArticle'
 
 defineProps<{ apercu: Apercu | null; loading?: boolean }>()
+const openArticle = useOpenArticle()
+
+// Le back renvoie un cosinus brut (0–1) ; la barre l'exprime en pourcentage de largeur.
+const pct = (score: number) => `${Math.round(Math.min(1, Math.max(0, score)) * 100)}%`
 </script>
 
 <template>
   <div class="apercu">
     <ol v-if="apercu && apercu.results.length" class="ap-list">
-      <li v-for="(r, i) in apercu.results" :key="r.articleId" class="ap-row">
+      <li
+        v-for="(r, i) in apercu.results"
+        :key="r.articleId"
+        class="ap-row"
+        role="link"
+        tabindex="0"
+        @click="openArticle(r.articleId)"
+        @keydown.enter="openArticle(r.articleId)"
+      >
         <span class="ap-rank">{{ String(i + 1).padStart(2, '0') }}</span>
         <div class="ap-body">
           <div class="ap-title">{{ r.titre }}</div>
           <div class="ap-source">{{ r.source }} · {{ r.date }}</div>
         </div>
         <div class="ap-score">
-          <span class="ap-bar"><span class="ap-fill" :style="{ width: `${r.score}%` }" /></span>
-          <span class="ap-num">{{ r.score }}</span>
+          <span class="ap-bar"><span class="ap-fill" :style="{ width: pct(r.score) }" /></span>
+          <span class="ap-num">{{ r.score.toFixed(2) }}</span>
         </div>
       </li>
     </ol>
@@ -41,9 +54,17 @@ defineProps<{ apercu: Apercu | null; loading?: boolean }>()
   gap: 12px;
   padding: 11px 0;
   border-bottom: 1px solid var(--color-rule-2);
+  cursor: pointer;
 }
 .ap-row:last-child {
   border-bottom: none;
+}
+.ap-row:hover .ap-title {
+  color: var(--color-indigo);
+}
+.ap-row:focus-visible {
+  outline: 2px solid var(--color-indigo-tint);
+  border-radius: var(--radius-sm);
 }
 .ap-rank {
   font-family: var(--font-mono);
