@@ -5,7 +5,7 @@ import {
   postListen,
   type ArticleFeedbackType,
 } from '../api/feedback'
-import { createFavorite, deleteFavorite } from '../api/memoire'
+import { createFavorite, deleteFavorite, fetchFavorites } from '../api/memoire'
 import type { ArticleId } from '../types'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
@@ -26,9 +26,27 @@ export const useFeedbackStore = defineStore('feedback', () => {
   // Implicites + écoute : on n'émet qu'une fois par (article|date) et par type.
   const firedImplicit = ref<Set<string>>(new Set())
   const listenSent = ref<Set<string>>(new Set())
+  const favoritesHydrated = ref(false)
 
   function get(id: string): ArticleFb {
     return state.value[id] ?? { favorite: false, opinion: null }
+  }
+
+  // Hydrate l'étoile depuis la bibliothèque persistante (table `user_favorites`) : sans ça,
+  // l'état favori est local et l'étoile retombe « éteinte » au rechargement. Idempotent,
+  // best-effort, appelé une fois au bootstrap (App.vue) après résolution de l'identité.
+  async function hydrateFavorites() {
+    if (USE_MOCK || favoritesHydrated.value) return
+    favoritesHydrated.value = true
+    try {
+      const favs = await fetchFavorites()
+      for (const f of favs) {
+        const cur = get(f.articleId)
+        state.value[f.articleId] = { ...cur, favorite: true }
+      }
+    } catch {
+      favoritesHydrated.value = false // permet un nouvel essai (ex. token tardif)
+    }
   }
 
   function send(id: string, type: ArticleFeedbackType, briefingDate?: string) {
@@ -79,5 +97,5 @@ export const useFeedbackStore = defineStore('feedback', () => {
     postListen(date, pct).catch(() => {})
   }
 
-  return { get, toggleFavorite, setOpinion, markImplicit, markListen }
+  return { get, toggleFavorite, hydrateFavorites, setOpinion, markImplicit, markListen }
 })

@@ -3,6 +3,7 @@ import { computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AppSidebar from '@/components/layout/AppSidebar.vue'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { useFeedbackStore } from '@/stores/useFeedbackStore'
 
 // L'écran verrouillé (PRD #49) s'affiche plein écran, sans la coquille applicative.
 const route = useRoute()
@@ -12,6 +13,7 @@ const isLocked = computed(() => route.path === '/locked')
 // Identité de session + redirection onboarding (INV-U10) : un utilisateur sans
 // profil est conduit vers l'entretien avant de voir un briefing vide.
 const auth = useAuthStore()
+const feedback = useFeedbackStore()
 onMounted(async () => {
   if (route.path === '/locked') return
   try {
@@ -19,6 +21,8 @@ onMounted(async () => {
     if (auth.me && !auth.me.has_profile && route.path !== '/onboarding') {
       router.replace('/onboarding')
     }
+    // Étoiles favori = reflet de la bibliothèque persistante (idempotent, best-effort).
+    feedback.hydrateFavorites()
   } catch {
     /* 401 géré par client.ts (→ /locked) ; pas d'autre action ici. */
   }
