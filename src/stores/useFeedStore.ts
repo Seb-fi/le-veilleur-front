@@ -7,10 +7,9 @@ import {
   type SubscribeApp,
   type SubscribeAction,
 } from '../api/feed'
+import { mockFetchMyFeed, mockRegeneratedUrl } from '../mocks/feed'
 
 const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true'
-
-const MOCK_FEED_URL = 'https://veille.example.eu/feed/mock-token-abc123.xml'
 
 // État du canal flux podcast per-user (PRD « Flux podcast audio »). La création/
 // rotation passe TOUJOURS par regenerate (POST) — jamais un effet de bord d'un GET.
@@ -26,12 +25,10 @@ export const useFeedStore = defineStore('feed', () => {
     loading.value = true
     error.value = null
     try {
-      if (USE_MOCK) {
-        feedUrl.value = MOCK_FEED_URL
-      } else {
-        const res = await fetchMyFeed()
-        feedUrl.value = res.feed_url
-      }
+      // Aligné back : me renvoie l'URL réelle si un flux actif existe, sinon null.
+      // En mock, le helper simule le cas actif par défaut (?feed=empty force null).
+      const res = USE_MOCK ? mockFetchMyFeed() : await fetchMyFeed()
+      feedUrl.value = res.feed_url
       loaded.value = true
     } catch (e) {
       error.value = e instanceof Error ? e.message : 'Erreur de chargement du flux'
@@ -47,7 +44,7 @@ export const useFeedStore = defineStore('feed', () => {
     error.value = null
     try {
       if (USE_MOCK) {
-        feedUrl.value = `https://veille.example.eu/feed/rotated-${Date.now().toString(36)}.xml`
+        feedUrl.value = mockRegeneratedUrl()
       } else {
         const res = await regenerateFeed()
         feedUrl.value = res.feed_url

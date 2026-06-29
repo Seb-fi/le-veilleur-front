@@ -29,6 +29,29 @@ test('la rubrique Mon flux audio s’affiche dans le profil', async ({ page }) =
   await expect(page.getByRole('tab', { name: /Apple Podcasts/ })).toBeVisible()
 })
 
+test('flux actif (me renvoie une URL) → abonnement direct, « Régénérer » secondaire', async ({ page }) => {
+  await page.goto('/#/profil')
+  // L'URL réelle est affichée dans le champ copier-coller (rubrique d'abonnement visible).
+  await expect(page.getByRole('textbox', { name: /URL de votre flux/ })).toHaveValue(/\/feed\//)
+  await expect(page.getByRole('button', { name: 'Copier' })).toBeVisible()
+  // « Régénérer » est une action SECONDAIRE explicite — JAMAIS le geste par défaut.
+  await expect(page.getByRole('button', { name: 'Régénérer mon flux' })).toBeVisible()
+  // Pas de gros bouton « Générer » trompeur quand un flux est déjà actif.
+  await expect(page.getByRole('button', { name: /Générer mon flux/ })).toHaveCount(0)
+  // Le bouton « Régénérer » ne déclenche RIEN sans confirmation explicite (pas de casse).
+  await page.getByRole('button', { name: 'Régénérer mon flux' }).click()
+  await expect(page.getByText(/ancien lien cessera de fonctionner/)).toBeVisible()
+})
+
+test('aucun flux (me renvoie null) → « Générer mon flux », pas de rubrique d’abonnement', async ({ page }) => {
+  // ?feed=empty force le mock fetchMyFeed à renvoyer { feed_url: null }.
+  await page.goto('/#/profil?feed=empty')
+  await expect(page.getByRole('button', { name: /Générer mon flux audio/ })).toBeVisible()
+  // Tant qu'aucun flux n'existe : pas d'onglets ni de champ URL.
+  await expect(page.getByRole('tab', { name: /Apple Podcasts/ })).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Régénérer mon flux' })).toHaveCount(0)
+})
+
 test('les onglets par app sont cliquables et changent le panneau', async ({ page }) => {
   await page.goto('/#/profil')
   const overcast = page.getByRole('tab', { name: /Overcast/ })
