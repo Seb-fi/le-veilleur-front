@@ -4,6 +4,7 @@
 // + réglages de lecture (/settings). La recalibration réutilise l'entretien (/onboarding).
 import { onMounted, computed } from 'vue'
 import { useProfileStore } from '../stores/useProfileStore'
+import FeedSubscribe from '../components/feed/FeedSubscribe.vue'
 
 const store = useProfileStore()
 onMounted(() => store.load())
@@ -111,6 +112,9 @@ function setSchedule(e: Event) {
         <button class="set-download" @click="store.downloadProfile()">Exporter mon profil (JSON)</button>
       </aside>
     </div>
+
+    <!-- Mon flux audio — abonnement podcast privé per-user (PRD « Flux podcast audio »). -->
+    <FeedSubscribe v-if="!store.loading && !store.error" />
   </div>
 </template>
 
